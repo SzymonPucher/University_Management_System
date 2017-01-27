@@ -1,15 +1,15 @@
 # depslib dependency file v1.0
-1485448412 source:c:\users\spuch\documents\github\app_for_university_management\main.cpp
+1485529589 source:c:\users\spuch\documents\github\app_for_university_management\main.cpp
 	<iostream>
 	"classes.h"
 	<fstream>
 	<cstdlib>
 	<vector>
 
-1485448412 c:\users\spuch\documents\github\app_for_university_management\classes.h
+1485530933 c:\users\spuch\documents\github\app_for_university_management\classes.h
 	<iostream>
 
-1485447267 source:c:\users\spuch\documents\github\app_for_university_management\methods.cpp
+1485529469 source:c:\users\spuch\documents\github\app_for_university_management\methods.cpp
 	<iostream>
 	"classes.h"
 	<fstream>

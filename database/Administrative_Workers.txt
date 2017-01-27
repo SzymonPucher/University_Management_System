@@ -1,0 +1,5 @@
+Pesel		Fname	Lname	Gender	DateOfBirth	awID	aw-Email		Job_title
+
+96112403334	Szymon	Pucher 	Male 	24.11.1996 	22813 	228190@aw.email.com 	NormalWorker
+13957362537	Mark	Zuck	Male	34.87.1934	98764	987654@aw.email.com	AdminOfDB
+13957362765	Melania	Trump	Female	32.17.2099	98326	983212@aw.email.com	NormalWorker

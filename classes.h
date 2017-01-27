@@ -4,56 +4,100 @@ using namespace std;
 
 class Person {
 protected:
+    int index;
     long long int pesel;
     string fName;
     string lName;
-    char gender;
+    string gender;
+    string dateOfBirth;
 public:
     Person();
     ~Person();
-    show();
+    void setIndex(int x);
+    void setPesel(long long int x);
+    void setFName(string x);
+    void setLName(string x);
+    void setGender(string x);
+    void setDateOfBirth(string x);
+    long long int getPesel();
+    string& getFName();
+    string& getLName();
+    string& getGender();
+    string& getDateOfBirth();
 };
 
-class Student: Person {
+class Student: public Person {
 protected:
     long int StudentID;
-    string s_email;
+    string sEmail;
 public:
     Student();
     ~Student();
-    showStud();
+    void load();
+    void showStud();
+    void setStudentID(long int x);
+    void setsEmail(string x);
+    long int getStudentID();
+    string& getsEmail();
 };
 
-class Professor: Person {
+class Professor: public Person {
 protected:
     long int ProfessorID;
-    string p_email;
+    string pEmail;
+    string title;
 public:
     Professor();
     ~Professor();
-    showProf();
+    void load();
+    void showProf();
+    void setProfessorID(long int x);
+    void setpEmail(string x);
+    void setTitle(string x);
+    long int getProfessorID();
+    string& getpEmail();
+    string& getTitle();
 };
 
-class Administrive_Worker: Person {
+class Administrative_Worker: public Person {
 protected:
     long int AWID;
-    string aw_email;
+    string awEmail;
+    string jobTitle;
 public:
-    Administrive_Worker();
-    ~Administrive_Worker();
-    showAW();
+    Administrative_Worker();
+    ~Administrative_Worker();
+    void load();
+    void showAW();
+    void setAWID(long int x);
+    void setawEmail(string x);
+    void setJobTitle(string x);
+    long int getAWID();
+    string& getawEmail();
+    string& getJobTitle();
 };
 
 class Course {
 protected:
+    int index;
+    int CourseID;
     int semester;
-    long int CourseID;
     string name;
-    string exam_date;
+    string examDate;
 public:
     Course();
     ~Course();
-    showCourse();
+    void load();
+    void showCourse();
+    void setIndex(int x);
+    void setCID(int x);
+    void setSemester(int x);
+    void setName(string x);
+    void setExamDate(string x);
+    int getCID();
+    int getSemester();
+    string& getName();
+    string& getExamDate();
 };
 
 

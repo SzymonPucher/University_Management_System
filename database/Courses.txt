@@ -1,0 +1,5 @@
+CourseID	semester	name				examDate
+
+101		1		Introduction_to_Programming	28.03.1034
+102		4		Introduction_to_CS		08.09.1012
+103		5		Introduction_to_DB		18.08.1035

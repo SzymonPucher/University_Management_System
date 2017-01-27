@@ -9,57 +9,263 @@ Person::Person(){ // constructor
     pesel = 11111111111;
     fName = "Nie wybrano imienia";
     lName = "Nie wybrano nazwiska";
+    gender = "Male";
+    dateOfBirth = "00.00.0000";
 }
 Person::~Person(){} // destructor
-
-Person::show(){
-    cout << pesel << "\t" << fName << "\t" << lName << endl;
+void Person::setIndex(int x){
+    index = x;
 }
-
-Student::Student(){ // constructor
-    pesel = 11111111111;
-    fName = "Nie wybrano imienia";
-    lName = "Nie wybrano nazwiska";
+void Person::setPesel(long long int x){
+    index = x;
+}
+void Person::setFName(string x){
+    fName = x;
+}
+void Person::setLName(string x){
+    lName = x;
+}
+void Person::setGender(string x){
+    gender = x;
+}
+void Person::setDateOfBirth(string x){
+    dateOfBirth = x;
+}
+long long int Person::getPesel(){
+    return pesel;
+}
+string& Person::getFName(){
+    string mystring(fName);
+    return mystring;
+}
+string& Person::getLName(){
+    string mystring(lName);
+    return mystring;
+}
+string& Person::getDateOfBirth(){
+    string mystring(dateOfBirth);
+    return mystring;
+}
+string& Person::getGender(){
+    string mystring(gender);
+    return mystring;
+}
+ // --------------------------------------- STUDENT METHODS ------------------------------------------
+Student::Student(){ // constructor;
     StudentID = 0;
+    sEmail = "0@student.email.com";
 }
 Student::~Student(){} // destructor
+void Student::load(){
+    fstream stud;
+    stud.open("database/Students.txt",ios::in);
 
-Student::showStud(){
-    cout << pesel << "\t" << fName << "\t" << lName << "\t" << StudentID << endl;
+    if(stud.good()==false){
+        cout<<"Cannot open students database!";
+        exit(0);
+    }
+
+    int line_num = (index-1)*7+1;
+    int test_num = 1;
+    string line;
+
+    while(stud >> line){
+        if(test_num==line_num) pesel=atoll(line.c_str());
+        if(test_num==line_num+1) fName=line;
+        if(test_num==line_num+2) lName=line;
+        if(test_num==line_num+3) gender=line;
+        if(test_num==line_num+4) dateOfBirth=line;
+        if(test_num==line_num+5) StudentID=atoi(line.c_str());
+        if(test_num==line_num+6) sEmail=line;
+        test_num++;
+    }
+    stud.close();
 }
-
+void Student::showStud(){
+    cout << pesel << "\t" << fName << "\t" << lName << "\t" << StudentID << "\t" << gender << "\t" << sEmail << endl;
+}
+void Student::setStudentID(long int x){
+    StudentID = x;
+}
+void Student::setsEmail(string x){
+    sEmail = x;
+}
+long int Student::getStudentID(){
+    return StudentID;
+}
+string& Student::getsEmail(){
+    string mystring(sEmail);
+    return mystring;
+}
+// --------------------------------- PROFESSOR METHODS -----------------------------
 Professor::Professor(){ // constructor
-    pesel = 11111111111;
-    fName = "Nie wybrano imienia";
-    lName = "Nie wybrano nazwiska";
     ProfessorID = 0;
+    pEmail = "0@professor.email.com";
 }
 Professor::~Professor(){} // destructor
+void Professor::load(){
+    fstream prof;
+    prof.open("database/Professors.txt",ios::in);
 
-Professor::showProf(){
-    cout << pesel << "\t" << fName << "\t" << lName << "\t" << ProfessorID << endl;
+    if(prof.good()==false){
+        cout<<"Cannot open professors database!";
+        exit(0);
+    }
+
+    int line_num = (index-1)*8+1;
+    int test_num = 1;
+    string line;
+
+    while(prof >> line){
+        if(test_num==line_num) pesel=atoll(line.c_str());
+        if(test_num==line_num+1) fName=line;
+        if(test_num==line_num+2) lName=line;
+        if(test_num==line_num+3) gender=line;
+        if(test_num==line_num+4) dateOfBirth=line;
+        if(test_num==line_num+5) ProfessorID=atoi(line.c_str());
+        if(test_num==line_num+6) pEmail=line;
+        if(test_num==line_num+7) title=line;
+        test_num++;
+    }
+    prof.close();
 }
-
-Administrive_Worker::Administrive_Worker(){ // constructor
-    pesel = 11111111111;
-    fName = "Nie wybrano imienia";
-    lName = "Nie wybrano nazwiska";
+void Professor::showProf(){
+    cout << pesel << "\t" << title << "\t" << fName << "\t" << lName << "\t" << ProfessorID << "\t" << gender << "\t" << pEmail << endl;
+}
+void Professor::setProfessorID(long int x){
+    ProfessorID = x;
+}
+void Professor::setpEmail(string x){
+    pEmail = x;
+}
+void Professor::setTitle(string x){
+    title = x;
+}
+long int Professor::getProfessorID(){
+    return ProfessorID;
+}
+string& Professor::getpEmail(){
+    string mystring(pEmail);
+    return mystring;
+}
+string& Professor::getTitle(){
+    string mystring(title);
+    return mystring;
+}
+// ----------------------------- ADMINISTRATIVE WORKERS ----------------------------
+Administrative_Worker::Administrative_Worker(){ // constructor
     AWID = 0;
+    awEmail = "0@aw.email.com";
 }
-Administrive_Worker::~Administrive_Worker(){} // destructor
+Administrative_Worker::~Administrative_Worker(){} // destructor
+void Administrative_Worker::load(){
+    fstream aw;
+    aw.open("database/Administrative_Workers.txt",ios::in);
 
-Administrive_Worker::showAW(){
-    cout << pesel << "\t" << fName << "\t" << lName << "\t" << AWID << endl;
+    if(aw.good()==false){
+        cout<<"Cannot open administrative workers database!";
+        exit(0);
+    }
+
+    int line_num = (index)*8+1;
+    int test_num = 1;
+    string line;
+
+    while(aw >> line){
+        if(test_num==line_num) pesel=atoll(line.c_str());
+        if(test_num==line_num+1) fName=line;
+        if(test_num==line_num+2) lName=line;
+        if(test_num==line_num+3) gender=line;
+        if(test_num==line_num+4) dateOfBirth=line;
+        if(test_num==line_num+5) AWID=atoi(line.c_str());
+        if(test_num==line_num+6) awEmail=line;
+        if(test_num==line_num+7) jobTitle=line;
+        test_num++;
+    }
+    aw.close();
 }
-
+void Administrative_Worker::showAW(){
+    cout << pesel << "\t" << fName << "\t" << lName << "\t" << AWID << "\t" << gender << "\t" << awEmail << "\t" << jobTitle << endl;
+}
+void Administrative_Worker::setAWID(long int x){
+    AWID = x;
+}
+void Administrative_Worker::setawEmail(string x){
+    awEmail = x;
+}
+void Administrative_Worker::setJobTitle(string x){
+    jobTitle = x;
+}
+long int Administrative_Worker::getAWID(){
+    return AWID;
+}
+string& Administrative_Worker::getawEmail(){
+    string mystring(awEmail);
+    return mystring;
+}
+string& Administrative_Worker::getJobTitle(){
+    string mystring(jobTitle);
+    return mystring;
+}
+// ---------------------------- COURSE METHODS ----------------------------------
 Course::Course(){ // constructor
     semester = 0;
     CourseID = 0;
     name = "Nie wybrano nazwy kursu";
-    exam_date = "01.01.2001";
+    examDate = "00.00.0000";
 }
 Course::~Course(){} // destructor
+void Course::load(){
+    fstream cou;
+    cou.open("database/Courses.txt",ios::in);
 
-Course::showCourse(){
-    cout << CourseID << "\t" << semester << "\t" << name << "\t" << exam_date << endl;
+    if(cou.good()==false){
+        cout<<"Cannot open courses database!";
+        exit(0);
+    }
+
+    int line_num = (index)*4+1;
+    int test_num = 1;
+    string line;
+
+    while(cou >> line){
+        if(test_num==line_num) CourseID=atoll(line.c_str());
+        if(test_num==line_num+1) semester=atoll(line.c_str());
+        if(test_num==line_num+2) name=line;
+        if(test_num==line_num+3) examDate=line;
+        test_num++;
+    }
+    cou.close();
+}
+void Course::showCourse(){
+    cout << CourseID << "\t" << semester << "\t" << name << "\t" << examDate << endl;
+}
+void Course::setIndex(int x){
+    index = x;
+}
+void Course::setCID(int x){
+    CourseID = x;
+}
+void Course::setSemester(int x){
+    semester = x;
+}
+void Course::setName(string x){
+    name = x;
+}
+void Course::setExamDate(string x){
+    examDate = x;
+}
+int Course::getCID(){
+    return CourseID;
+}
+int Course::getSemester(){
+    return semester;
+}
+string& Course::getName(){
+    string mystring(name);
+    return mystring;
+}
+string& Course::getExamDate(){
+    string mystring(examDate);
+    return mystring;
 }
