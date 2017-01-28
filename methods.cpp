@@ -5,6 +5,7 @@
 
 using namespace std;
 
+ // --------------------------------------- PERSON METHODS ------------------------------------------
 Person::Person(){ // constructor
     pesel = 11111111111;
     fName = "Nie wybrano imienia";
@@ -64,11 +65,9 @@ void Student::load(){
         cout<<"Cannot open students database!";
         exit(0);
     }
-
-    int line_num = (index-1)*7+1;
+    int line_num = (index)*7+1;
     int test_num = 1;
     string line;
-
     while(stud >> line){
         if(test_num==line_num) pesel=atoll(line.c_str());
         if(test_num==line_num+1) fName=line;
@@ -76,13 +75,17 @@ void Student::load(){
         if(test_num==line_num+3) gender=line;
         if(test_num==line_num+4) dateOfBirth=line;
         if(test_num==line_num+5) StudentID=atoi(line.c_str());
-        if(test_num==line_num+6) sEmail=line;
+        if(test_num==line_num+6) { sEmail=line; break; }
         test_num++;
     }
     stud.close();
 }
 void Student::showStud(){
-    cout << pesel << "\t" << fName << "\t" << lName << "\t" << StudentID << "\t" << gender << "\t" << sEmail << endl;
+    cout << pesel << "\t" << fName << "\t";
+    if(fName.length() < 8) cout << "\t";
+    cout << lName << "\t";
+    if(lName.length() < 8) cout << "\t";
+    cout << gender << "\t" << dateOfBirth << "\t" << StudentID << "\t\t" << sEmail << endl;
 }
 void Student::setStudentID(long int x){
     StudentID = x;
@@ -112,25 +115,32 @@ void Professor::load(){
         exit(0);
     }
 
-    int line_num = (index-1)*8+1;
+    int line_num = index*8+1;
     int test_num = 1;
     string line;
 
     while(prof >> line){
         if(test_num==line_num) pesel=atoll(line.c_str());
-        if(test_num==line_num+1) fName=line;
-        if(test_num==line_num+2) lName=line;
-        if(test_num==line_num+3) gender=line;
-        if(test_num==line_num+4) dateOfBirth=line;
-        if(test_num==line_num+5) ProfessorID=atoi(line.c_str());
-        if(test_num==line_num+6) pEmail=line;
-        if(test_num==line_num+7) title=line;
+        if(test_num==line_num+1) title=line;
+        if(test_num==line_num+2) fName=line;
+        if(test_num==line_num+3) lName=line;
+        if(test_num==line_num+4) gender=line;
+        if(test_num==line_num+5) dateOfBirth=line;
+        if(test_num==line_num+6) ProfessorID=atoi(line.c_str());
+        if(test_num==line_num+7) { pEmail=line; break; }
         test_num++;
     }
     prof.close();
 }
 void Professor::showProf(){
-    cout << pesel << "\t" << title << "\t" << fName << "\t" << lName << "\t" << ProfessorID << "\t" << gender << "\t" << pEmail << endl;
+    cout << pesel << "\t" << title <<"\t";
+    if(title.length() < 16) cout << "\t";
+    if(title.length() < 8) cout << "\t";
+    cout << fName << "\t";
+    if(fName.length() < 8) cout << "\t";
+    cout << lName << "\t";
+    if(lName.length() < 8) cout << "\t";
+    cout << gender << "\t" << dateOfBirth << "\t" << ProfessorID << "\t\t" << pEmail << endl;
 }
 void Professor::setProfessorID(long int x){
     ProfessorID = x;
@@ -173,19 +183,26 @@ void Administrative_Worker::load(){
 
     while(aw >> line){
         if(test_num==line_num) pesel=atoll(line.c_str());
-        if(test_num==line_num+1) fName=line;
-        if(test_num==line_num+2) lName=line;
-        if(test_num==line_num+3) gender=line;
-        if(test_num==line_num+4) dateOfBirth=line;
-        if(test_num==line_num+5) AWID=atoi(line.c_str());
-        if(test_num==line_num+6) awEmail=line;
-        if(test_num==line_num+7) jobTitle=line;
+        if(test_num==line_num+1) jobTitle=line;
+        if(test_num==line_num+2) fName=line;
+        if(test_num==line_num+3) lName=line;
+        if(test_num==line_num+4) gender=line;
+        if(test_num==line_num+5) dateOfBirth=line;
+        if(test_num==line_num+6) AWID=atoi(line.c_str());
+        if(test_num==line_num+7) { awEmail=line; break; }
         test_num++;
     }
     aw.close();
 }
 void Administrative_Worker::showAW(){
-    cout << pesel << "\t" << fName << "\t" << lName << "\t" << AWID << "\t" << gender << "\t" << awEmail << "\t" << jobTitle << endl;
+    cout << pesel << "\t" << jobTitle <<"\t";
+    if(jobTitle.length() < 16) cout << "\t";
+    if(jobTitle.length() < 8) cout << "\t";
+    cout << fName << "\t";
+    if(fName.length() < 8) cout << "\t";
+    cout << lName << "\t";
+    if(lName.length() < 8) cout << "\t";
+    cout << gender << "\t" << dateOfBirth << "\t" << AWID << "\t\t" << awEmail << endl;
 }
 void Administrative_Worker::setAWID(long int x){
     AWID = x;
@@ -232,13 +249,18 @@ void Course::load(){
         if(test_num==line_num) CourseID=atoll(line.c_str());
         if(test_num==line_num+1) semester=atoll(line.c_str());
         if(test_num==line_num+2) name=line;
-        if(test_num==line_num+3) examDate=line;
+        if(test_num==line_num+3) { examDate=line; break; }
         test_num++;
     }
     cou.close();
 }
 void Course::showCourse(){
-    cout << CourseID << "\t" << semester << "\t" << name << "\t" << examDate << endl;
+    cout << CourseID << "\t\t" << semester << "\t\t" << name << "\t";
+    if(name.length() < 32) cout << "\t";
+    if(name.length() < 24) cout << "\t";
+    if(name.length() < 16) cout << "\t";
+    if(name.length() < 8) cout << "\t";
+    cout << examDate << endl;
 }
 void Course::setIndex(int x){
     index = x;

@@ -25,8 +25,6 @@ void loadDatabase(){
         if(s[s.size()-1].getPesel() == s[s.size()-2].getPesel()){ s.pop_back(); break; }
     }
 
-    for(int i=0; i<s.size(); i++) s[i].showStud();
-
      cout << "\nLoaded " << s.size() << " students.\n\n";
 
     while(true){ // Load professors
@@ -36,7 +34,7 @@ void loadDatabase(){
         if(p[p.size()-1].getPesel() == p[p.size()-2].getPesel()){ p.pop_back(); break; }
     }
 
-    for(int i=0; i<p.size(); i++) p[i].showProf();
+
 
      cout << "\nLoaded " << p.size() << " professors.\n\n";
 
@@ -47,7 +45,7 @@ void loadDatabase(){
         if(aw[aw.size()-1].getPesel() == aw[aw.size()-2].getPesel()){ aw.pop_back(); break; }
     }
 
-    for(int i=0; i<aw.size(); i++) aw[i].showAW();
+
 
     cout << "\nLoaded " << aw.size() << " administrative workers.\n\n";
 
@@ -58,14 +56,42 @@ void loadDatabase(){
         if(c[c.size()-1].getCID() == c[c.size()-2].getCID()){ c.pop_back(); break; }
     }
 
-    for(int i=0; i<c.size(); i++) c[i].showCourse();
+
 
     cout << "\nLoaded " << c.size() << " courses.\n\n";
+}
+
+void showAllStud(){
+    cout <<"PESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail"<<endl;
+    for(int i=0; i<s.size(); i++) s[i].showStud();
+    cout << endl << endl;
+}
+
+void showAllProf(){
+    cout <<"PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail"<<endl;
+    for(int i=0; i<p.size(); i++) p[i].showProf();
+    cout << endl << endl;
+}
+
+void showAllAdmWork(){
+    cout <<"PESEL\t\tJob Title\t\tFirst name\tLast name\tGender\tDate of birth\tAdm. Worker ID\tEmail"<<endl;
+    for(int i=0; i<aw.size(); i++) aw[i].showAW();
+    cout << endl << endl;
+}
+
+void showAllCourses(){
+    cout <<"CourseID\tSemester\tName\t\t\t\t\tExam date"<<endl;
+    for(int i=0; i<c.size(); i++) c[i].showCourse();
+    cout << endl << endl;
 }
 
 int main()
 {
 
     loadDatabase();
+    showAllStud();
+    showAllProf();
+    showAllAdmWork();
+    showAllCourses();
     return 0;
 }
