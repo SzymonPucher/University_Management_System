@@ -8,8 +8,8 @@ using namespace std;
  // --------------------------------------- PERSON METHODS ------------------------------------------
 Person::Person(){ // constructor
     pesel = 11111111111;
-    fName = "Nie wybrano imienia";
-    lName = "Nie wybrano nazwiska";
+    fName = "No Fname";
+    lName = "No Lname";
     gender = "Male";
     dateOfBirth = "00.00.0000";
 }
@@ -18,7 +18,7 @@ void Person::setIndex(int x){
     index = x;
 }
 void Person::setPesel(long long int x){
-    index = x;
+    pesel = x;
 }
 void Person::setFName(string x){
     fName = x;
