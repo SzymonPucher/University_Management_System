@@ -230,6 +230,7 @@ Course::Course(){ // constructor
     CourseID = 0;
     name = "Nie wybrano nazwy kursu";
     examDate = "00.00.0000";
+    pID = 1000;
 }
 Course::~Course(){} // destructor
 void Course::load(){
@@ -241,7 +242,7 @@ void Course::load(){
         exit(0);
     }
 
-    int line_num = (index)*4+1;
+    int line_num = (index)*5+1;
     int test_num = 1;
     string line;
 
@@ -249,7 +250,8 @@ void Course::load(){
         if(test_num==line_num) CourseID=atoll(line.c_str());
         if(test_num==line_num+1) semester=atoll(line.c_str());
         if(test_num==line_num+2) name=line;
-        if(test_num==line_num+3) { examDate=line; break; }
+        if(test_num==line_num+3) pID=atoll(line.c_str());
+        if(test_num==line_num+4) { examDate=line; break; }
         test_num++;
     }
     cou.close();
@@ -260,13 +262,16 @@ void Course::showCourse(){
     if(name.length() < 24) cout << "\t";
     if(name.length() < 16) cout << "\t";
     if(name.length() < 8) cout << "\t";
-    cout << examDate << endl;
+    cout << pID << "\t" << examDate << endl;
 }
 void Course::setIndex(int x){
     index = x;
 }
 void Course::setCID(int x){
     CourseID = x;
+}
+void Course::setPID(int x){
+    pID = x;
 }
 void Course::setSemester(int x){
     semester = x;

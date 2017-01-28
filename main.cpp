@@ -12,7 +12,10 @@ vector < Student > s;
 vector < Professor > p;
 vector < Administrative_Worker > aw;
 vector < Course > c;
-
+void assignProfCourses(){
+    for(int i=0;i<600;i++)
+        c[i].setPID(p[i%p.size()].getProfessorID());
+}
 void loadDatabase(){
 
      while(true){ // Load students
@@ -60,6 +63,8 @@ void loadDatabase(){
 
 
     cout << "\nLoaded " << c.size() << " courses.\n";
+
+    assignProfCourses();
 }
 void showAllStud(){
     cout <<"\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail"<<endl;
@@ -77,7 +82,7 @@ void showAllAdmWork(){
     cout << endl << endl;
 }
 void showAllCourses(){
-    cout <<"CourseID\tSemester\tName\t\t\t\t\tExam date"<<endl;
+    cout <<"CourseID\tSemester\tName\t\t\t\t\tpID\tExam date"<<endl;
     for(int i=0; i<c.size(); i++) c[i].showCourse();
     cout << endl << endl;
 }
@@ -366,16 +371,12 @@ void addAW(){
 void addCourse(){
 
 }
+
 int main()
 {
 /* */
     loadDatabase();
-    showAllStud();
-    showAllProf();
-    showAllAdmWork();
     showAllCourses();
-    addStud();
-    showAllStud();
 
 /* */
     return 0;

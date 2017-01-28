@@ -81,6 +81,7 @@ class Course {
 protected:
     int index;
     int CourseID;
+    int pID;
     int semester;
     string name;
     string examDate;
@@ -91,6 +92,7 @@ public:
     void showCourse();
     void setIndex(int x);
     void setCID(int x);
+    void setPID(int x);
     void setSemester(int x);
     void setName(string x);
     void setExamDate(string x);
