@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <vector>
 #include <string>
+#include <time.h>
 
 using namespace std;
 
@@ -12,8 +13,32 @@ vector < Student > s;
 vector < Professor > p;
 vector < Administrative_Worker > aw;
 vector < Course > c;
+vector < Enrolled > e;
+
+void loadEnrolled(){
+    Enrolled enrl;
+    srand(time(NULL));
+    int CID, x1, x2, x3;
+    long int SID;
+    float grade;
+    for(int i=0;i<c.size();i++){
+        CID = c[i].getCID();
+        x1 = rand() % 101 + 30;
+        x3 = rand() % s.size();
+        for(int j=0;j < x1;j++){
+            x3 += (rand() % 25+1) ;
+            SID = s[x3 % s.size()].getStudentID();
+            grade = (rand() % 7 + 4)/2;
+            if (grade == 2.5) grade = 2;
+            enrl.setCourseID(CID);
+            enrl.setStudID(SID);
+            enrl.setGrade(grade);
+            e.push_back(enrl);
+        }
+    }
+}
 void assignProfCourses(){
-    for(int i=0;i<600;i++)
+    for(int i=0;i<c.size();i++)
         c[i].setPID(p[i%p.size()].getProfessorID());
 }
 void loadDatabase(){
@@ -65,6 +90,7 @@ void loadDatabase(){
     cout << "\nLoaded " << c.size() << " courses.\n";
 
     assignProfCourses();
+    loadEnrolled();
 }
 void showAllStud(){
     cout <<"\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail"<<endl;
@@ -84,6 +110,11 @@ void showAllAdmWork(){
 void showAllCourses(){
     cout <<"CourseID\tSemester\tName\t\t\t\t\tpID\tExam date"<<endl;
     for(int i=0; i<c.size(); i++) c[i].showCourse();
+    cout << endl << endl;
+}
+void showAllEnrolled(){
+    cout <<"CourseID\t\tStudentID\t\tGrade"<<endl;
+    for(int i=0; i<e.size(); i++) e[i].showEnrolled();
     cout << endl << endl;
 }
 void addStud(){
@@ -371,12 +402,23 @@ void addAW(){
 void addCourse(){
 
 }
-
+void select(){ // trash testing function
+    int x;
+    cin >> x;
+    for(int i=0; i<s.size(); i++) {
+        for(int j=0; j<e.size(); j++){
+            if(s[i].getStudentID() == e[j].getStudID() && x == e[j].getCID() && e[j].getGrade() == 5)
+                s[i].showStud();
+        }
+    }
+}
 int main()
 {
 /* */
     loadDatabase();
-    showAllCourses();
+    showAllStud();
+    showAllEnrolled();
+    select();
 
 /* */
     return 0;

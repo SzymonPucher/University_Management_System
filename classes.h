@@ -102,6 +102,23 @@ public:
     string& getExamDate();
 };
 
+class Enrolled {
+protected:
+    int CourseID;
+    long int StudentID;
+    float grade;
+public:
+    Enrolled();
+    ~Enrolled();
+    void showEnrolled();
+    void setCourseID(int x);
+    void setStudID(long int x);
+    void setGrade(float x);
+    int getCID();
+    long int getStudID();
+    float getGrade();
+};
+
 
 
 

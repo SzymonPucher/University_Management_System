@@ -296,3 +296,31 @@ string& Course::getExamDate(){
     string mystring(examDate);
     return mystring;
 }
+// ---------------------------- ENROLLED METHODS ---------------------------------
+Enrolled::Enrolled(){ // constructor
+    CourseID = 0;
+    StudentID = 100000;
+    grade = 1.5;
+}
+Enrolled::~Enrolled(){} // destructor
+void Enrolled::showEnrolled(){
+    cout << CourseID << "\t\t" << StudentID << "\t\t" << grade << endl;
+}
+void Enrolled::setCourseID(int x){
+    CourseID = x;
+}
+void Enrolled::setStudID(long int x){
+    StudentID = x;
+}
+void Enrolled::setGrade(float x){
+    grade = x;
+}
+int Enrolled::getCID(){
+    return CourseID;
+}
+long int Enrolled::getStudID(){
+    return StudentID;
+}
+float Enrolled::getGrade(){
+    return grade;
+}
