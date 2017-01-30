@@ -15,6 +15,13 @@ vector < Administrative_Worker > aw;
 vector < Course > c;
 vector < Enrolled > e;
 
+void showAllCourses(){
+    cout <<"CourseID\tSemester\tName\t\t\t\t\tpID\tExam date"<<endl;
+    for(int i=0; i<c.size(); i++) c[i].showCourse();
+    cout << endl << endl;
+}
+
+void login();
 void loadEnrolled(){
     Enrolled enrl;
     srand(time(NULL));
@@ -107,11 +114,7 @@ void showAllAdmWork(){
     for(int i=0; i<aw.size(); i++) aw[i].showAW();
     cout << endl << endl;
 }
-void showAllCourses(){
-    cout <<"CourseID\tSemester\tName\t\t\t\t\tpID\tExam date"<<endl;
-    for(int i=0; i<c.size(); i++) c[i].showCourse();
-    cout << endl << endl;
-}
+
 void showAllEnrolled(){
     cout <<"CourseID\t\tStudentID\t\tGrade"<<endl;
     for(int i=0; i<e.size(); i++) e[i].showEnrolled();
@@ -400,7 +403,47 @@ void addAW(){
     aw.push_back(admWor);
 }
 void addCourse(){
+    Course cour;
+    string ts;
+    long long int ti;
+    cout << "\n\nAdding new course.\n\nSemester: ";
+    cin >> ti;
+    cour.setCID(c.size()+101);
+    try {
+        if (ti > 10){
+            throw "There is no such semester (1-10)!";
+        }
+        cour.setSemester(ti);
+    } catch (const char* msg) {
+        cerr << msg << endl;
+        return;
+    }
 
+    cout << "\nName: ";
+    cin >> ts;
+    try {
+        if (ts.length() > 31){
+            throw "Name is too long!";
+        }
+        cour.setName(ts);
+    } catch (const char* msg) {
+        cerr << msg << endl;
+        return;
+    }
+
+    cout << "\nExam date: ";
+    cin >> ts;
+    try {
+        if (ts.length() > 10 || ts.length() < 8){
+            throw "Wrong format, too short or too long!";
+        }
+        cour.setExamDate(ts);
+    } catch (const char* msg) {
+        cerr << msg << endl;
+        return;
+    }
+
+    c.push_back(cour);
 }
 void select(){ // trash testing function
     int x;
@@ -412,14 +455,189 @@ void select(){ // trash testing function
         }
     }
 }
+void menuStud(int ID){
+    int x;
+    cout << "\nYou are logged as Student with ID: " << ID << endl;
+    cout << "1. Show your data\n2. Show your courses\n3. Enroll to a course\n4. Logout\n5. Exit\nYour choice: ";
+    cin >> x;
+    if(x==1){
+        for(int i = 0; i < s.size();i++){
+            if(ID == s[i].getStudentID()){
+                cout << "\nPesel: " << s[i].getPesel() << "\nName: ";
+                cout << s[i].getFName() << " ";
+                cout << s[i].getLName() << "\nGender: ";
+                cout << s[i].getGender() << "\nDate of birth: ";
+                cout << s[i].getDateOfBirth() << "\nStudentID: " << s[i].getStudentID() << "\nEmail: ";
+                cout << s[i].getsEmail() << endl << endl;
+                break;
+            }
+        }
+    }
+    else if(x==2){
+        cout <<"CourseID\tSemester\tName\t\t\t\t\tpID\tExam date"<<endl;
+        for(int i=0; i<c.size(); i++)
+            for(int j=0; j<e.size(); j++)
+                if(ID == e[j].getStudID() && c[i].getCID() == e[j].getCID())
+                    c[i].showCourse();
+    }
+    else if(x==3){
+        Enrolled enrl;
+        int CID;
+        cout << "Enroll to course with ID: ";
+        cin >> CID;
+
+        try {
+            if (CID < 101 || CID > c.size()+100){
+                throw "There is no such course!";
+            }
+            if (false){
+                throw "You are already enrolled for this course!";
+            }
+            enrl.setCourseID(CID);
+            enrl.setStudID(ID);
+            e.push_back(enrl);
+        } catch (const char* msg) {
+            cerr << msg << endl;
+        }
+    }
+    else if(x==4)
+        login();
+    else if(x==5)
+        exit(0);
+    menuStud(ID);
+}
+void menuProf(int ID){
+    int x;
+    cout << "\nYou are logged as Professor with ID: " << ID << endl;
+    cout << "1. Show your data\n2. Show your courses\n3. Show your students\n4. Grade a student\n5. Logout\n6. Exit\nYour choice: ";
+    cin >> x;
+    if(x==1){
+        for(int i = 0; i < p.size();i++){
+            if(ID == p[i].getProfessorID()){
+                cout << "\nPesel: " << p[i].getPesel() << "\nName: ";
+                cout << p[i].getFName() << " ";
+                cout << p[i].getLName() << "\nGender: ";
+                cout << p[i].getGender() << "\nDate of birth: ";
+                cout << p[i].getDateOfBirth() << "\nProfessorID: " << p[i].getProfessorID() << "\nTitle: ";
+                cout << p[i].getTitle() << "\nEmail: ";
+                cout << p[i].getpEmail() << endl << endl;
+                break;
+            }
+        }
+    }
+    else if(x==2){
+        cout <<"CourseID\tSemester\tName\t\t\t\t\tpID\tExam date"<<endl;
+        for(int i=0; i<c.size(); i++)
+            if(ID == c[i].getPID())
+                c[i].showCourse();
+    }
+    else if(x==3){
+        for(int i=0; i<c.size(); i++){
+            if(ID == c[i].getPID()){
+                for(int j=0;j<e.size();j++){
+                    if(c[i].getCID() == e[j].getCID()){
+                        for(int k=0;k<s.size();k++)
+                            if(e[j].getStudID() == s[k].getStudentID())
+                                s[k].showStud();
+                    }
+                }
+            }
+        }
+    }
+    else if(x==4){
+        int CID, SID;
+        float grade;
+        cout << "Grade student from course with ID: ";
+        cin >> CID;
+        cout << "List of all students attending this course: \n\n";
+        for(int j=0;j<e.size();j++){
+            if(CID == e[j].getCID()){
+                for(int k=0;k<s.size();k++)
+                    if(e[j].getStudID() == s[k].getStudentID())
+                        s[k].showStud();
+            }
+        }
+        cout << "\nWhich one you want to grade, input his StudentID: ";
+        cin >> SID;
+        cout << "\nAnd this student's grade is: ";
+        cin >> grade;
+        int i;
+        for(i=0;i<e.size();i++){
+            if(e[i].getStudID() == SID && e[i].getCID() == CID){
+                e[i].setGrade(grade);
+                break;
+            }
+        }
+        cout << endl;
+        e[i].showEnrolled();
+    }
+    else if(x==5)
+        login();
+    else if(x==6)
+        exit(0);
+    menuProf(ID);
+}
+void menuAW(int ID){
+    int x;
+    cout << "\nYou are logged as Administrative Worker with ID: " << ID << endl;
+    cout << "1. Show your data\n2. Add new Student\n3. Add new Professor\n4. Add new Administrative Worker\n5. Add new Course\n";
+    cout << "6. Show all students\n7. Show all professors\n8. Show all administrative workers\n9. Show all courses\n10. Logout\n11. Exit\n\nYour choice: ";
+    cin >> x;
+    if(x==1){
+        for(int i = 0; i < aw.size();i++){
+            if(ID == aw[i].getAWID()){
+                cout << "\nPesel: " << aw[i].getPesel() << "\nName: ";
+                cout << aw[i].getFName() << " ";
+                cout << aw[i].getLName() << "\nGender: ";
+                cout << aw[i].getGender() << "\nDate of birth: ";
+                cout << aw[i].getDateOfBirth() << "\nAWID: " << aw[i].getAWID() << "\nJob Title: ";
+                cout << aw[i].getJobTitle() << "\nEmail: ";
+                cout << aw[i].getawEmail() << endl << endl;
+                break;
+            }
+        }
+    }
+    else if(x==2)
+        addStud();
+    else if(x==3)
+        addProf();
+    else if(x==4)
+        addAW();
+    else if(x==5)
+        addCourse();
+    else if(x==6)
+        showAllStud();
+    else if(x==7)
+        showAllProf();
+    else if(x==8)
+        showAllAdmWork();
+    else if(x==9)
+        showAllCourses();
+    else if(x==10)
+        login();
+    else if(x==11)
+        exit(0);
+    menuAW(ID);
+}
+
+void login(){
+    srand(time(NULL));
+    int x;
+    cout << "\nLogin as:\n1. Random student\n2. Random professor\n3. Administrative worker with full authorization.\nYour choice: ";
+    cin >> x;
+    if(x==1)
+        menuStud(s[rand() % s.size()].getStudentID());
+    else if(x==2)
+        menuProf(p[rand() % p.size()].getProfessorID());
+    else if(x==3)
+        menuAW(aw[rand() % aw.size()].getAWID());
+    else login();
+}
 int main()
 {
 /* */
     loadDatabase();
-    showAllStud();
-    showAllEnrolled();
-    select();
-
+    login();
 /* */
     return 0;
 }

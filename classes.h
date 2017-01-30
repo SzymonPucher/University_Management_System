@@ -97,6 +97,7 @@ public:
     void setName(string x);
     void setExamDate(string x);
     int getCID();
+    int getPID();
     int getSemester();
     string& getName();
     string& getExamDate();

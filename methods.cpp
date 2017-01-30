@@ -285,6 +285,9 @@ void Course::setExamDate(string x){
 int Course::getCID(){
     return CourseID;
 }
+int Course::getPID(){
+    return pID;
+}
 int Course::getSemester(){
     return semester;
 }
@@ -300,7 +303,7 @@ string& Course::getExamDate(){
 Enrolled::Enrolled(){ // constructor
     CourseID = 0;
     StudentID = 100000;
-    grade = 1.5;
+    grade = 3;
 }
 Enrolled::~Enrolled(){} // destructor
 void Enrolled::showEnrolled(){
