@@ -99,7 +99,7 @@ public:
     int getCID();
     int getPID();
     int getSemester();
-    string& getName();
+    string getName();
     string& getExamDate();
 };
 

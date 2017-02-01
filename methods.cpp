@@ -5,6 +5,7 @@
 
 using namespace std;
 
+
  // --------------------------------------- PERSON METHODS ------------------------------------------
 Person::Person(){ // constructor
     pesel = 11111111111;
@@ -291,9 +292,8 @@ int Course::getPID(){
 int Course::getSemester(){
     return semester;
 }
-string& Course::getName(){
-    string mystring(name);
-    return mystring;
+string Course::getName(){
+    return name;
 }
 string& Course::getExamDate(){
     string mystring(examDate);
@@ -327,3 +327,4 @@ long int Enrolled::getStudID(){
 float Enrolled::getGrade(){
     return grade;
 }
+

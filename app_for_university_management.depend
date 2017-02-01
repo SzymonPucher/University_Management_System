@@ -1,5 +1,18 @@
 # depslib dependency file v1.0
-1485816852 source:c:\users\spuch\documents\github\app_for_university_management\main.cpp
+1485952033 source:c:\users\spuch\documents\github\app_for_university_management\main.cpp
+	"menu.cpp"
+	<iostream>
+
+1485944182 c:\users\spuch\documents\github\app_for_university_management\classes.h
+	<iostream>
+
+1485944182 source:c:\users\spuch\documents\github\app_for_university_management\methods.cpp
+	<iostream>
+	"classes.h"
+	<fstream>
+	<cstdlib>
+
+1485953684 source:c:\users\spuch\documents\github\app_for_university_management\menu.cpp
 	<iostream>
 	"classes.h"
 	<fstream>
@@ -8,13 +21,16 @@
 	<vector>
 	<string>
 	<time.h>
+	<algorithm>
 
-1485815056 c:\users\spuch\documents\github\app_for_university_management\classes.h
-	<iostream>
-
-1485815056 source:c:\users\spuch\documents\github\app_for_university_management\methods.cpp
+1485954040 c:\users\spuch\documents\github\app_for_university_management\menu.cpp
 	<iostream>
 	"classes.h"
 	<fstream>
+	<sstream>
 	<cstdlib>
+	<vector>
+	<string>
+	<time.h>
+	<algorithm>
 
