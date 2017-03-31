@@ -1,1 +1,1 @@
-# app_for_university_management
+#  University Management System
