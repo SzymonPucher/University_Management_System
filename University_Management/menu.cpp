@@ -1,29 +1,14 @@
-#include <iostream>
-#include "classes.h"
-#include <fstream>
-#include <sstream>
-#include <cstdlib>
-#include <vector>
-#include <string>
-#include <time.h>
-#include <algorithm>
 
-class menu{
+#include "menu.h"
 
-vector < Student > s;
-vector < Professor > p;
-vector < Administrative_Worker > aw;
-vector < Course > c;
-vector < Enrolled > e;
 
-public:
 
 template <typename T> bool myMaxBool(T x, T y) {
     return x > y;
 }
-
-void loadEnrolled(){
-    Enrolled enrl;
+/* * /
+void menu::loadEnrolled(){
+    
     srand(time(NULL));
     int CID, x1, x2, x3;
     long int SID;
@@ -44,14 +29,14 @@ void loadEnrolled(){
         }
     }
 }
-void assignProfCourses(){
-    for(int i=0;i<c.size();i++)
-        c[i].setPID(p[i%p.size()].getProfessorID());
-}
-void loadDatabase(){
+/* * /
+
+
+
+void menu::loadDatabase(){
 
      while(true){ // Load students
-        Student stud;
+        
         stud.setIndex(s.size() + 1);
         stud.load();
         s.push_back(stud);
@@ -61,7 +46,7 @@ void loadDatabase(){
      cout << "\nLoaded " << s.size() << " students.\n";
 
     while(true){ // Load professors
-        Professor prof;
+        
         prof.setIndex(p.size() + 1);
         prof.load();
         p.push_back(prof);
@@ -73,7 +58,7 @@ void loadDatabase(){
      cout << "\nLoaded " << p.size() << " professors.\n";
 
     while(true){ // Load administrative workers
-        Administrative_Worker adm_worker;
+        
         adm_worker.setIndex(aw.size() + 1);
         adm_worker.load();
         aw.push_back(adm_worker);
@@ -85,7 +70,7 @@ void loadDatabase(){
     cout << "\nLoaded " << aw.size() << " administrative workers.\n";
 
     while(true){ // Load courses
-        Course course;
+        
         course.setIndex(c.size() + 1);
         course.load();
         c.push_back(course);
@@ -96,37 +81,43 @@ void loadDatabase(){
 
     cout << "\nLoaded " << c.size() << " courses.\n";
 
-    assignProfCourses();
-    loadEnrolled();
+   // assignProfCourses();
+   // loadEnrolled();
 }
-void showAllStud(){
+/*
+
+void menu::assignProfCourses(){
+for(int i=0;i < c.size();i++)
+c[i].setPID(p[i%p.size()].getProfessorID());
+}
+void menu::showAllStud(){
     cout <<"\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail"<<endl;
     for(int i=0; i<s.size(); i++) s[i].showStud();
     cout << endl << endl;
 }
-void showAllProf(){
+void menu::showAllProf(){
     cout <<"PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail"<<endl;
     for(int i=0; i<p.size(); i++) p[i].showProf();
     cout << endl << endl;
 }
-void showAllAdmWork(){
+void menu::showAllAdmWork(){
     cout <<"PESEL\t\tJob Title\t\tFirst name\tLast name\tGender\tDate of birth\tAdm. Worker ID\tEmail"<<endl;
     for(int i=0; i<aw.size(); i++) aw[i].showAW();
     cout << endl << endl;
 }
-void showAllCourses(){
+void menu::showAllCourses(){
     cout <<"CourseID\tSemester\tName\t\t\t\t\tpID\tExam date"<<endl;
     for(int i=0; i<c.size(); i++) c[i].showCourse();
     cout << endl << endl;
 }
-void showAllEnrolled(){
+void menu::showAllEnrolled(){
     cout <<"CourseID\t\tStudentID\t\tGrade"<<endl;
     for(int i=0; i<e.size(); i++) e[i].showEnrolled();
     cout << endl << endl;
 }
-void addStud(){
+void menu::addStud(){
 
-    Student stud;
+    
     string ts;
     long long int ti;
     cout << "\n\nAdding new student.\n\nPESEL: ";
@@ -210,9 +201,9 @@ void addStud(){
     stud.setsEmail(ts);
     s.push_back(stud);
 }
-void addProf(){
+void menu::addProf(){
 
-    Professor prof;
+    
     string ts;
     long long int ti;
     cout << "\n\nAdding new professor.\n\nPESEL: ";
@@ -308,9 +299,9 @@ void addProf(){
     prof.setpEmail(ts);
     p.push_back(prof);
 }
-void addAW(){
+void menu::addAW(){
 
-    Administrative_Worker admWor;
+    
     string ts;
     long long int ti;
     cout << "\n\nAdding new professor.\n\nPESEL: ";
@@ -320,7 +311,7 @@ void addAW(){
         if (ti < 10000000000){
             throw "Wrong pesel format!";
         }
-        admWor.setPesel(ti);
+        adm_worker.setPesel(ti);
     } catch (const char* msg) {
         cerr << msg << endl;
         return;
@@ -332,7 +323,7 @@ void addAW(){
         if (ts.length() > 23){
             throw "First name is too long!";
         }
-        admWor.setFName(ts);
+		adm_worker.setFName(ts);
     } catch (const char* msg) {
         cerr << msg << endl;
         return;
@@ -344,7 +335,7 @@ void addAW(){
         if (ts.length() > 23){
             throw "Last name is too long!";
         }
-        admWor.setLName(ts);
+		adm_worker.setLName(ts);
     } catch (const char* msg) {
         cerr << msg << endl;
         return;
@@ -356,7 +347,7 @@ void addAW(){
         if (ts.length() > 23){
             throw "Wrong format, too long!";
         }
-        admWor.setJobTitle(ts);
+		adm_worker.setJobTitle(ts);
     } catch (const char* msg) {
         cerr << msg << endl;
         return;
@@ -370,7 +361,7 @@ void addAW(){
         }
         if (ts == "M") ts = "Male";
         if (ts == "F") ts = "Female";
-        admWor.setGender(ts);
+		adm_worker.setGender(ts);
     } catch (const char* msg) {
         cerr << msg << endl;
         return;
@@ -382,7 +373,7 @@ void addAW(){
         if (ts.length() > 10 || ts.length() < 8){
             throw "Wrong format, too short or too long!";
         }
-        admWor.setDateOfBirth(ts);
+		adm_worker.setDateOfBirth(ts);
     } catch (const char* msg) {
         cerr << msg << endl;
         return;
@@ -394,7 +385,7 @@ void addAW(){
         if (ti > 99999 || ti < 10000){
             throw "Wrong number, AWID should have 5 digits!";
         }
-        admWor.setAWID(ti);
+		adm_worker.setAWID(ti);
     } catch (const char* msg) {
         cerr << msg << endl;
         return;
@@ -403,21 +394,21 @@ void addAW(){
     ostringstream stream;
     stream << ti << "@aw.email.com";
     ts = stream.str();
-    admWor.setawEmail(ts);
-    aw.push_back(admWor);
+	adm_worker.setawEmail(ts);
+    aw.push_back(adm_worker);
 }
-void addCourse(){
-    Course cour;
+void menu::addCourse(){
+    
     string ts;
     long long int ti;
     cout << "\n\nAdding new course.\n\nSemester: ";
     cin >> ti;
-    cour.setCID(c.size()+101);
+	course.setCID(c.size()+101);
     try {
         if (ti > 10){
             throw "There is no such semester (1-10)!";
         }
-        cour.setSemester(ti);
+		course.setSemester(ti);
     } catch (const char* msg) {
         cerr << msg << endl;
         return;
@@ -429,7 +420,7 @@ void addCourse(){
         if (ts.length() > 31){
             throw "Name is too long!";
         }
-        cour.setName(ts);
+		course.setName(ts);
     } catch (const char* msg) {
         cerr << msg << endl;
         return;
@@ -441,15 +432,15 @@ void addCourse(){
         if (ts.length() > 10 || ts.length() < 8){
             throw "Wrong format, too short or too long!";
         }
-        cour.setExamDate(ts);
+		course.setExamDate(ts);
     } catch (const char* msg) {
         cerr << msg << endl;
         return;
     }
 
-    c.push_back(cour);
+    c.push_back(course);
 }
-void deleteStud(){
+void menu::deleteStud(){
     int x;
     cout << "Give me ID of a student you want to delete: ";
     cin >> x;
@@ -458,13 +449,13 @@ void deleteStud(){
         if(s[i].getStudentID() == x)
             s.erase(s.begin() + i);
 }
-void select(){
+void menu::select(){
     //char* word[];
     int x;
     string s1,s2;
     cout << "From which table: \n1. Students\n2. Professors\n3. Administrative workers\n4. Courses\n\nYour choice: ";
     cin >> x;
-    if (x==1){/* */
+    if (x==1){/* * /
 
         cout << "Like which value: ";
         cin >> s1;
@@ -508,7 +499,7 @@ void select(){
                     if(s[i].getFName() == "Katie") s[i].showStud();
             }
             cout << endl << endl;
-        }/* */
+        }/* * /
     }
     if (x==2){
         string s3;
@@ -534,10 +525,10 @@ void select(){
     if (x==3){}
     if (x==4){}
 }
-void showStudSorted(){
+void menu::showStudSorted(){
     //std::sort(s.begin(), s.end(), )
 }
-void menuStud(int ID){
+void menu::menuStud(int ID){
     int x;
     cout << "\nYou are logged as Student with ID: " << ID << endl;
     cout << "1. Show your data\n2. Show your courses\n3. Enroll to a course\n4. Logout\n5. Exit\nYour choice: ";
@@ -563,7 +554,6 @@ void menuStud(int ID){
                     c[i].showCourse();
     }
     else if(x==3){
-        Enrolled enrl;
         int CID;
         cout << "Enroll to course with ID: ";
         cin >> CID;
@@ -592,7 +582,7 @@ void menuStud(int ID){
         exit(0);
     menuStud(ID);
 }
-void menuProf(int ID){
+void menu::menuProf(int ID){
     int x;
     cout << "\nYou are logged as Professor with ID: " << ID << endl;
     cout << "1. Show your data\n2. Show your courses\n3. Show your students\n4. Grade a student\n5. Logout\n6. Exit\nYour choice: ";
@@ -665,7 +655,7 @@ void menuProf(int ID){
         exit(0);
     menuProf(ID);
 }
-void menuAW(int ID){
+void menu::menuAW(int ID){
     int x;
     cout << "\nYou are logged as Administrative Worker with ID: " << ID << endl;
     cout << "1. Show your data\n2. Add new Student\n3. Add new Professor\n4. Add new Administrative Worker\n5. Add new Course\n";
@@ -713,7 +703,7 @@ void menuAW(int ID){
         exit(0);
     menuAW(ID);
 }
-void login(){
+void menu::login(){
     srand(time(NULL));
     int x;
 
@@ -727,4 +717,5 @@ void login(){
         menuAW(aw[rand() % aw.size()].getAWID());
     else { system("cls"); login(); }
 }
-};
+
+*/

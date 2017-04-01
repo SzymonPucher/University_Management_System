@@ -1,4 +1,11 @@
 #include <iostream>
+#include <stdio.h>
+#include <string>
+#include <fstream>
+#include <cstdlib>
+#include <time.h>
+#include <algorithm>
+#include <vector>
 
 using namespace std;
 
@@ -20,10 +27,11 @@ public:
     void setGender(string x);
     void setDateOfBirth(string x);
     long long int getPesel();
-    string& getFName();
-    string& getLName();
-    string& getGender();
-    string& getDateOfBirth();
+    string getFName();
+    string getLName();
+    string getGender();
+    string getDateOfBirth();
+
 };
 
 class Student: public Person {
@@ -33,12 +41,12 @@ protected:
 public:
     Student();
     ~Student();
-    void load();
+	void load(vector<Student>& s);
     void showStud();
     void setStudentID(long int x);
     void setsEmail(string x);
     long int getStudentID();
-    string& getsEmail();
+    string getsEmail();
 };
 
 class Professor: public Person {
@@ -49,14 +57,14 @@ protected:
 public:
     Professor();
     ~Professor();
-    void load();
+	void load(vector<Professor>& p);
     void showProf();
     void setProfessorID(long int x);
     void setpEmail(string x);
     void setTitle(string x);
     long int getProfessorID();
-    string& getpEmail();
-    string& getTitle();
+    string getpEmail();
+    string getTitle();
 };
 
 class Administrative_Worker: public Person {
@@ -67,14 +75,14 @@ protected:
 public:
     Administrative_Worker();
     ~Administrative_Worker();
-    void load();
+	void load(vector<Administrative_Worker>& a);
     void showAW();
     void setAWID(long int x);
     void setawEmail(string x);
     void setJobTitle(string x);
     long int getAWID();
-    string& getawEmail();
-    string& getJobTitle();
+    string getawEmail();
+    string getJobTitle();
 };
 
 class Course {
@@ -88,8 +96,9 @@ protected:
 public:
     Course();
     ~Course();
-    void load();
+	void load(vector<Course>& c);
     void showCourse();
+	void showCourse(vector<Course>& c);
     void setIndex(int x);
     void setCID(int x);
     void setPID(int x);
@@ -100,7 +109,7 @@ public:
     int getPID();
     int getSemester();
     string getName();
-    string& getExamDate();
+    string getExamDate();
 };
 
 class Enrolled {
