@@ -1,4 +1,4 @@
-PESEL		Title			First_name	Last_name	Gender		Date_of_birth	ProfessorID	Email
+PESEL		Title			First_name	Last_name	Gender		Date_of_birth	Professor_ID	Professor_e-mail
 
 55033146219	Research_Associate	Larry		Brown		Male		31.3.1955	1253		1253@professor.email.com
 64032646223	Distinguished_Prof	Simon		Scott		Male		26.3.1964	1260		1260@professor.email.com

@@ -11,7 +11,6 @@ using namespace std;
 
 class Person {
 protected:
-    int index;
     long long int pesel;
     string fName;
     string lName;
@@ -20,7 +19,6 @@ protected:
 public:
     Person();
     ~Person();
-    void setIndex(int x);
     void setPesel(long long int x);
     void setFName(string x);
     void setLName(string x);
@@ -42,7 +40,9 @@ public:
     Student();
     ~Student();
 	void load(vector<Student>& s);
-    void showStud();
+	void generate();
+	void save(vector<Student>& vec);
+	void showStud(vector<Student>& vec);
     void setStudentID(long int x);
     void setsEmail(string x);
     long int getStudentID();
@@ -58,7 +58,8 @@ public:
     Professor();
     ~Professor();
 	void load(vector<Professor>& p);
-    void showProf();
+	void save(vector<Professor>& vec);
+	void showProf(vector<Professor>& vec);
     void setProfessorID(long int x);
     void setpEmail(string x);
     void setTitle(string x);
@@ -76,7 +77,8 @@ public:
     Administrative_Worker();
     ~Administrative_Worker();
 	void load(vector<Administrative_Worker>& a);
-    void showAW();
+	void save(vector<Administrative_Worker>& vec);
+	void showAW(vector<Administrative_Worker>& vec);
     void setAWID(long int x);
     void setawEmail(string x);
     void setJobTitle(string x);
@@ -87,7 +89,7 @@ public:
 
 class Course {
 protected:
-    int index;
+
     int CourseID;
     int pID;
     int semester;
@@ -97,9 +99,9 @@ public:
     Course();
     ~Course();
 	void load(vector<Course>& c);
+	void save(vector<Course>& vec);
     void showCourse();
 	void showCourse(vector<Course>& c);
-    void setIndex(int x);
     void setCID(int x);
     void setPID(int x);
     void setSemester(int x);
@@ -110,6 +112,7 @@ public:
     int getSemester();
     string getName();
     string getExamDate();
+	void assignProf(vector<Course>& c, vector<Professor>& p);
 };
 
 class Enrolled {
@@ -120,7 +123,10 @@ protected:
 public:
     Enrolled();
     ~Enrolled();
-    void showEnrolled();
+	void load(vector<Enrolled>& vec);
+	void generate(vector<Student>& s, vector<Course>& c, vector<Enrolled>& e);
+	void save(vector<Enrolled>& vec);
+	void showEnrolled(vector<Enrolled>& vec);
     void setCourseID(int x);
     void setStudID(long int x);
     void setGrade(float x);
@@ -128,6 +134,17 @@ public:
     long int getStudID();
     float getGrade();
 };
+class menu
+{
+public:
+	menu();
+	~menu();
+	void loadDatabase(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e);
+	void gen(vector<Student>& s);
+private:
+
+};
+
 
 
 
