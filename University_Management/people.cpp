@@ -82,8 +82,114 @@ void Student::load(vector<Student>& s){
 
 	studDB.close();
 }
-void Student::generate() {
+void Student::generate(vector<Student>& s, int howMany) {
+	if (howMany > 899000) howMany = 899000;
+	fstream fmn_file, ffn_file, ln_file;
+	fmn_file.open("database/generatorDB/First_names_male.txt", ios::in);
+	if (fmn_file.good() == false) {
+		cout << "Cannot open first male names database!";
+		exit(0);
+	}
+	ffn_file.open("database/generatorDB/First_names_female.txt", ios::in);
+	if (ffn_file.good() == false) {
+		cout << "Cannot open first female names database!";
+		exit(0);
+	}
+	ln_file.open("database/generatorDB/Last_names.txt", ios::in);
+	if (ln_file.good() == false) {
+		cout << "Cannot open last names database!";
+		exit(0);
+	}
+	string line;
+	vector<string> fmn, ffn, ln;
+	while (!fmn_file.eof()) {
+		fmn_file >> line;
+		fmn.push_back(line);
+	}
+	while (!ffn_file.eof()) {
+		ffn_file >> line;
+		ffn.push_back(line);
+	}
+	while (!ln_file.eof()) {
+		ln_file >> line;
+		ln.push_back(line);
+	}
+	fmn.pop_back();
+	ffn.pop_back();
+	ln.pop_back();
 
+	fmn_file.close();
+	ffn_file.close();
+	ln_file.close();
+
+	Student stud;
+	int y, m, d, pes5dig, sid = 100000;
+	string temp;
+	srand(time(NULL));
+	for (int i = 0; i < howMany; i++) {
+		if (rand() % 2) {
+			stud.setGender("Male");
+			stud.setFName(fmn[rand() % fmn.size()]);
+		}
+		else {
+			stud.setGender("Female");
+			stud.setFName(ffn[rand() % ffn.size()]);
+		}
+		stud.setLName( ln[ rand() % ln.size() ] );
+		
+		y = rand() % 15 + 1985;
+		m = rand() % 12 + 1;
+		if (m == 2) {
+			if (y % 4) d = rand() % 28 + 1;
+			else d = rand() % 29 + 1;
+		}
+		else if (m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12) d = rand() % 31 + 1;
+		else d = rand() % 30 + 1;
+		
+		temp.append(to_string(y % 100));
+		if (m < 10) temp.append(to_string(0));
+		temp.append(to_string(m));
+		if (d < 10) temp.append(to_string(0));
+		temp.append(to_string(d));
+		for (int j = 0; j < 5; j++) {
+			temp.append(to_string(rand() % 10));
+		}
+		stud.setPesel(stoll(temp));
+		temp.clear();
+
+		if (d < 10) temp.append(to_string(0));
+		temp.append(to_string(d));
+		temp.append(".");
+		if (m < 10) temp.append(to_string(0));
+		temp.append(to_string(m));
+		temp.append(".");
+		temp.append(to_string(y));
+		stud.setDateOfBirth(temp);
+		temp.clear();
+
+		stud.setStudentID(sid);
+		temp = to_string(sid++);
+		temp.append("@student.email.com");
+		stud.setsEmail(temp);
+		temp.clear();
+
+
+
+		s.push_back(stud);
+		
+	}
+	sort(s.begin(),s.end(), [](const Student& lhs, const Student& rhs)
+	{
+		return lhs.pesel < rhs.pesel;
+	});
+	int count = 0;
+	for (int i = 0; i < s.size()-1; i++) {
+		if (s[i].getPesel() == s[i + 1].getPesel()) {
+			count++;
+			s.erase(s.begin()+i);
+		}
+	}
+	if (count != 0) stud.generate(s, count);
 }
 void Student::save(vector<Student>& vec) {
 	ofstream file;
@@ -161,6 +267,115 @@ void Professor::load(vector<Professor>& p){
 	}
 	p.pop_back();
 	profDB.close();
+}
+void Professor::generate(vector<Professor>& vec, int howMany) {
+	if (howMany > 8990) howMany = 8990;
+	fstream fmn_file, ffn_file, ln_file;
+	fmn_file.open("database/generatorDB/First_names_male.txt", ios::in);
+	if (fmn_file.good() == false) {
+		cout << "Cannot open first male names database!";
+		exit(0);
+	}
+	ffn_file.open("database/generatorDB/First_names_female.txt", ios::in);
+	if (ffn_file.good() == false) {
+		cout << "Cannot open first female names database!";
+		exit(0);
+	}
+	ln_file.open("database/generatorDB/Last_names.txt", ios::in);
+	if (ln_file.good() == false) {
+		cout << "Cannot open last names database!";
+		exit(0);
+	}
+	string line;
+	vector<string> fmn, ffn, ln;
+	while (!fmn_file.eof()) {
+		fmn_file >> line;
+		fmn.push_back(line);
+	}
+	while (!ffn_file.eof()) {
+		ffn_file >> line;
+		ffn.push_back(line);
+	}
+	while (!ln_file.eof()) {
+		ln_file >> line;
+		ln.push_back(line);
+	}
+	fmn.pop_back();
+	ffn.pop_back();
+	ln.pop_back();
+
+	fmn_file.close();
+	ffn_file.close();
+	ln_file.close();
+
+	Professor prof;
+	int y, m, d, pes5dig, sid = 1000;
+	string temp;
+	srand(time(NULL));
+	for (int i = 0; i < howMany; i++) {
+		if (rand() % 2) {
+			prof.setGender("Male");
+			prof.setFName(fmn[rand() % fmn.size()]);
+		}
+		else {
+			prof.setGender("Female");
+			prof.setFName(ffn[rand() % ffn.size()]);
+		}
+		prof.setLName(ln[rand() % ln.size()]);
+
+		y = rand() % 35 + 1945;
+		m = rand() % 12 + 1;
+		if (m == 2) {
+			if (y % 4) d = rand() % 28 + 1;
+			else d = rand() % 29 + 1;
+		}
+		else if (m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12) d = rand() % 31 + 1;
+		else d = rand() % 30 + 1;
+
+		temp.append(to_string(y % 100));
+		if (m < 10) temp.append(to_string(0));
+		temp.append(to_string(m));
+		if (d < 10) temp.append(to_string(0));
+		temp.append(to_string(d));
+		for (int j = 0; j < 5; j++) {
+			temp.append(to_string(rand() % 10));
+		}
+		prof.setPesel(stoll(temp));
+		temp.clear();
+
+		if (d < 10) temp.append(to_string(0));
+		temp.append(to_string(d));
+		temp.append(".");
+		if (m < 10) temp.append(to_string(0));
+		temp.append(to_string(m));
+		temp.append(".");
+		temp.append(to_string(y));
+		prof.setDateOfBirth(temp);
+		temp.clear();
+
+		prof.setProfessorID(sid);
+		temp = to_string(sid++);
+		temp.append("@professor.email.com");
+		prof.setpEmail(temp);
+		temp.clear();
+
+		prof.setTitle("No title");
+
+		vec.push_back(prof);
+
+	}
+	sort(vec.begin(), vec.end(), [](const Professor& lhs, const Professor& rhs)
+	{
+		return lhs.pesel < rhs.pesel;
+	});
+	int count = 0;
+	for (int i = 0; i < vec.size() - 1; i++) {
+		if (vec[i].getPesel() == vec[i + 1].getPesel()) {
+			count++;
+			vec.erase(vec.begin() + i);
+		}
+	}
+	if (count != 0) prof.generate(vec, count);
 }
 void Professor::save(vector<Professor>& vec) {
 	ofstream file;
@@ -250,6 +465,115 @@ void Administrative_Worker::load(vector<Administrative_Worker>& a){
 	a.pop_back();
     aw.close();
 }
+void Administrative_Worker::generate(vector<Administrative_Worker>& vec, int howMany) {
+	if (howMany > 89900) howMany = 89900;
+	fstream fmn_file, ffn_file, ln_file;
+	fmn_file.open("database/generatorDB/First_names_male.txt", ios::in);
+	if (fmn_file.good() == false) {
+		cout << "Cannot open first male names database!";
+		exit(0);
+	}
+	ffn_file.open("database/generatorDB/First_names_female.txt", ios::in);
+	if (ffn_file.good() == false) {
+		cout << "Cannot open first female names database!";
+		exit(0);
+	}
+	ln_file.open("database/generatorDB/Last_names.txt", ios::in);
+	if (ln_file.good() == false) {
+		cout << "Cannot open last names database!";
+		exit(0);
+	}
+	string line;
+	vector<string> fmn, ffn, ln;
+	while (!fmn_file.eof()) {
+		fmn_file >> line;
+		fmn.push_back(line);
+	}
+	while (!ffn_file.eof()) {
+		ffn_file >> line;
+		ffn.push_back(line);
+	}
+	while (!ln_file.eof()) {
+		ln_file >> line;
+		ln.push_back(line);
+	}
+	fmn.pop_back();
+	ffn.pop_back();
+	ln.pop_back();
+
+	fmn_file.close();
+	ffn_file.close();
+	ln_file.close();
+
+	Administrative_Worker aw;
+	int y, m, d, pes5dig, sid = 10000;
+	string temp;
+	srand(time(NULL));
+	for (int i = 0; i < howMany; i++) {
+		if (rand() % 2) {
+			aw.setGender("Male");
+			aw.setFName(fmn[rand() % fmn.size()]);
+		}
+		else {
+			aw.setGender("Female");
+			aw.setFName(ffn[rand() % ffn.size()]);
+		}
+		aw.setLName(ln[rand() % ln.size()]);
+
+		y = rand() % 35 + 1945;
+		m = rand() % 12 + 1;
+		if (m == 2) {
+			if (y % 4) d = rand() % 28 + 1;
+			else d = rand() % 29 + 1;
+		}
+		else if (m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12) d = rand() % 31 + 1;
+		else d = rand() % 30 + 1;
+
+		temp.append(to_string(y % 100));
+		if (m < 10) temp.append(to_string(0));
+		temp.append(to_string(m));
+		if (d < 10) temp.append(to_string(0));
+		temp.append(to_string(d));
+		for (int j = 0; j < 5; j++) {
+			temp.append(to_string(rand() % 10));
+		}
+		aw.setPesel(stoll(temp));
+		temp.clear();
+
+		if (d < 10) temp.append(to_string(0));
+		temp.append(to_string(d));
+		temp.append(".");
+		if (m < 10) temp.append(to_string(0));
+		temp.append(to_string(m));
+		temp.append(".");
+		temp.append(to_string(y));
+		aw.setDateOfBirth(temp);
+		temp.clear();
+
+		aw.setAWID(sid);
+		temp = to_string(sid++);
+		temp.append("@aw.email.com");
+		aw.setawEmail(temp);
+		temp.clear();
+
+		aw.setJobTitle("No title");
+
+		vec.push_back(aw);
+
+	}
+	sort(vec.begin(), vec.end(), [](const Administrative_Worker& lhs, const Administrative_Worker& rhs)
+	{
+		return lhs.pesel < rhs.pesel;
+	});
+	int count = 0;
+	for (int i = 0; i < vec.size() - 1; i++) {
+		if (vec[i].getPesel() == vec[i + 1].getPesel()) {
+			count++;
+			vec.erase(vec.begin() + i);
+		}
+	}
+	if (count != 0) aw.generate(vec, count);
+}
 void Administrative_Worker::save(vector<Administrative_Worker>& vec) {
 	ofstream file;
 	file.open("database/Administrative_Workers.txt");
@@ -338,6 +662,44 @@ void Course::load(vector<Course>& c){
 	}
 	c.pop_back();
 	couDB.close();
+}
+void Course::generate(vector<Course>& vec, int howMany, vector<Professor>& p) {
+	if (howMany > 899) howMany = 899;
+	
+
+	Course cour;
+	int y, m, d, sid = 100;
+	string temp;
+	srand(time(NULL));
+	for (int i = 0; i < howMany; i++) {
+
+		y = 2017;
+		m = rand() % 12 + 1;
+		if (m == 2) {
+			if (y % 4) d = rand() % 28 + 1;
+			else d = rand() % 29 + 1;
+		}
+		else if (m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12) d = rand() % 31 + 1;
+		else d = rand() % 30 + 1;
+
+		if (d < 10) temp.append(to_string(0));
+		temp.append(to_string(d));
+		temp.append(".");
+		if (m < 10) temp.append(to_string(0));
+		temp.append(to_string(m));
+		temp.append(".");
+		temp.append(to_string(y));
+		cour.setExamDate(temp);
+		temp.clear();
+
+		cour.setCID(sid++);
+		cour.setSemester(rand()%10+1);
+		if (p.size() > 0) 
+			cour.setPID(p[rand() % p.size()].getProfessorID());
+
+		vec.push_back(cour);
+
+	}
 }
 void Course::save(vector<Course>& vec) {
 	ofstream file;
@@ -525,13 +887,13 @@ void menu::loadDatabase(vector<Student>& s, vector<Professor>& p, vector<Adminis
 }
 void menu::gen(vector<Student>& vec) {
 	ofstream file;
-	file.open("database/generatorDB/First_names_female.txt");
+	file.open("database/generatorDB/First_names_male.txt");
 	vector<string> vec2;
 	bool test = true;
 	int size = vec.size();
 	for (int i = 0; i < size; i++) {
 		test = true;
-		if (vec[i].getGender() == "Male") continue;
+		if (vec[i].getGender() == "Female") continue;
 		for (int j = 0; j < vec2.size(); j++)
 			if (vec2[j] == vec[i].getFName()) test = false;
 		if (test) {
@@ -542,6 +904,7 @@ void menu::gen(vector<Student>& vec) {
 
 	
 	int size2 = vec2.size();
+	sort(vec2.begin(), vec2.end());
 	for (int i = 0; i < size2; i++) {
 		file << vec2[i] << endl;
 	}

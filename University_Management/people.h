@@ -40,7 +40,7 @@ public:
     Student();
     ~Student();
 	void load(vector<Student>& s);
-	void generate();
+	void generate(vector<Student>& s, int howMany);
 	void save(vector<Student>& vec);
 	void showStud(vector<Student>& vec);
     void setStudentID(long int x);
@@ -58,6 +58,7 @@ public:
     Professor();
     ~Professor();
 	void load(vector<Professor>& p);
+	void generate(vector<Professor>& vec, int howMany);
 	void save(vector<Professor>& vec);
 	void showProf(vector<Professor>& vec);
     void setProfessorID(long int x);
@@ -77,6 +78,7 @@ public:
     Administrative_Worker();
     ~Administrative_Worker();
 	void load(vector<Administrative_Worker>& a);
+	void generate(vector<Administrative_Worker>& vec, int howMany);
 	void save(vector<Administrative_Worker>& vec);
 	void showAW(vector<Administrative_Worker>& vec);
     void setAWID(long int x);
@@ -99,6 +101,7 @@ public:
     Course();
     ~Course();
 	void load(vector<Course>& c);
+	void generate(vector<Course>& vec, int howMany, vector<Professor>& p);
 	void save(vector<Course>& vec);
     void showCourse();
 	void showCourse(vector<Course>& c);

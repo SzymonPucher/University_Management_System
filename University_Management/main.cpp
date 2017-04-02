@@ -17,10 +17,9 @@ int main()
 	vector < Course > c;
 	vector < Enrolled > e;
 
-	m.loadDatabase(s,p,a,c,e);
-	m.gen(s);
-
-
+	prof.generate(p,2000);
+	course.generate(c,100,p);
+	course.showCourse(c);
 	//enrl.showEnrolled(e);
 
 	system("pause");
