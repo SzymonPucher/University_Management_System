@@ -143,7 +143,8 @@ public:
 	menu();
 	~menu();
 	void loadDatabase(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e);
-	void gen(vector<Student>& s);
+	void gen(vector<Professor>& s);
+	void generateAll(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e, unsigned int howMany);
 private:
 
 };

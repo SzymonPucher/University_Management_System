@@ -1,0 +1,10 @@
+Adjunct_Professor
+Assistant_Professor
+Associate_Professor
+Distinguished_Prof
+Endowed_Prof
+Full_Professor
+Instructor
+Lecturer
+Research_Associate
+Research_Professor

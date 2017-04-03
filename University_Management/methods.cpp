@@ -1,4 +1,4 @@
-#include "people.h"
+#include "classes.h"
 
 
 
@@ -270,7 +270,7 @@ void Professor::load(vector<Professor>& p){
 }
 void Professor::generate(vector<Professor>& vec, int howMany) {
 	if (howMany > 8990) howMany = 8990;
-	fstream fmn_file, ffn_file, ln_file;
+	fstream fmn_file, ffn_file, ln_file, t_file;
 	fmn_file.open("database/generatorDB/First_names_male.txt", ios::in);
 	if (fmn_file.good() == false) {
 		cout << "Cannot open first male names database!";
@@ -286,8 +286,13 @@ void Professor::generate(vector<Professor>& vec, int howMany) {
 		cout << "Cannot open last names database!";
 		exit(0);
 	}
+	t_file.open("database/generatorDB/Job_titles_professors.txt", ios::in);
+	if (t_file.good() == false) {
+		cout << "Cannot open last names database!";
+		exit(0);
+	}
 	string line;
-	vector<string> fmn, ffn, ln;
+	vector<string> fmn, ffn, ln, t;
 	while (!fmn_file.eof()) {
 		fmn_file >> line;
 		fmn.push_back(line);
@@ -300,13 +305,19 @@ void Professor::generate(vector<Professor>& vec, int howMany) {
 		ln_file >> line;
 		ln.push_back(line);
 	}
+	while (!t_file.eof()) {
+		t_file >> line;
+		t.push_back(line);
+	}
 	fmn.pop_back();
 	ffn.pop_back();
 	ln.pop_back();
+	t.pop_back();
 
 	fmn_file.close();
 	ffn_file.close();
 	ln_file.close();
+	t_file.close();
 
 	Professor prof;
 	int y, m, d, pes5dig, sid = 1000;
@@ -359,7 +370,7 @@ void Professor::generate(vector<Professor>& vec, int howMany) {
 		prof.setpEmail(temp);
 		temp.clear();
 
-		prof.setTitle("No title");
+		prof.setTitle(t[rand()%t.size()]);
 
 		vec.push_back(prof);
 
@@ -467,7 +478,7 @@ void Administrative_Worker::load(vector<Administrative_Worker>& a){
 }
 void Administrative_Worker::generate(vector<Administrative_Worker>& vec, int howMany) {
 	if (howMany > 89900) howMany = 89900;
-	fstream fmn_file, ffn_file, ln_file;
+	fstream fmn_file, ffn_file, ln_file, t_file;
 	fmn_file.open("database/generatorDB/First_names_male.txt", ios::in);
 	if (fmn_file.good() == false) {
 		cout << "Cannot open first male names database!";
@@ -483,8 +494,13 @@ void Administrative_Worker::generate(vector<Administrative_Worker>& vec, int how
 		cout << "Cannot open last names database!";
 		exit(0);
 	}
+	t_file.open("database/generatorDB/Job_titles_workers.txt", ios::in);
+	if (t_file.good() == false) {
+		cout << "Cannot open last names database!";
+		exit(0);
+	}
 	string line;
-	vector<string> fmn, ffn, ln;
+	vector<string> fmn, ffn, ln, t;
 	while (!fmn_file.eof()) {
 		fmn_file >> line;
 		fmn.push_back(line);
@@ -497,13 +513,19 @@ void Administrative_Worker::generate(vector<Administrative_Worker>& vec, int how
 		ln_file >> line;
 		ln.push_back(line);
 	}
+	while (!t_file.eof()) {
+		t_file >> line;
+		t.push_back(line);
+	}
 	fmn.pop_back();
 	ffn.pop_back();
 	ln.pop_back();
+	t.pop_back();
 
 	fmn_file.close();
 	ffn_file.close();
 	ln_file.close();
+	t_file.close();
 
 	Administrative_Worker aw;
 	int y, m, d, pes5dig, sid = 10000;
@@ -556,7 +578,7 @@ void Administrative_Worker::generate(vector<Administrative_Worker>& vec, int how
 		aw.setawEmail(temp);
 		temp.clear();
 
-		aw.setJobTitle("No title");
+		aw.setJobTitle(t[rand()%t.size()]);
 
 		vec.push_back(aw);
 
@@ -811,9 +833,10 @@ void Enrolled::generate(vector<Student>& s, vector<Course>& c, vector<Enrolled>&
 	long int SID;
 	int grade;
 	Enrolled enrl;
+	int ratio = s.size()/50;
 	for (int i = 0; i<c.size(); i++) {
 		CID = c[i].getCID();
-		x1 = rand() % 100 + 15;
+		x1 = rand() % ratio + 15;
 		x3 = rand() % s.size();
 		for (int j = 0; j < x1; j++) {
 			x3 += (rand() % 5 + 1);
@@ -885,33 +908,45 @@ void menu::loadDatabase(vector<Student>& s, vector<Professor>& p, vector<Adminis
 	cout << "Loaded " << a.size() << " administrative workers.\n";
 	cout << "Loaded " << c.size() << " courses.\n";
 }
-void menu::gen(vector<Student>& vec) {
+void menu::gen(vector<Professor>& vec) {
 	ofstream file;
-	file.open("database/generatorDB/First_names_male.txt");
+	file.open("database/generatorDB/Job_titles_professors.txt");
 	vector<string> vec2;
 	bool test = true;
 	int size = vec.size();
 	for (int i = 0; i < size; i++) {
 		test = true;
-		if (vec[i].getGender() == "Female") continue;
 		for (int j = 0; j < vec2.size(); j++)
-			if (vec2[j] == vec[i].getFName()) test = false;
+			if (vec2[j] == vec[i].getTitle()) test = false;
 		if (test) {
-			vec2.push_back(vec[i].getFName());
-			cout << vec2[vec2.size() - 1] << endl;
+			vec2.push_back(vec[i].getTitle());
+			//cout << vec[i].getJobTitle() << endl;
+
 		}
 	}
 
-	
 	int size2 = vec2.size();
 	sort(vec2.begin(), vec2.end());
 	for (int i = 0; i < size2; i++) {
 		file << vec2[i] << endl;
 	}
-
+	
 	file.close();
 }
-
+void menu::generateAll(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e, unsigned int howMany) {
+	Student stud;
+	Professor prof;
+	Administrative_Worker adw;
+	Course course;
+	Enrolled enrl;
+	if (howMany > 1000000) howMany = 1000000;
+	if (howMany < 100) howMany = 100;
+	stud.generate(s, howMany);
+	prof.generate(p, howMany/16);
+	adw.generate(a, howMany/100);
+	course.generate(c, 900, p);
+	enrl.generate(s, c, e);
+}
 
 /* * /
 template <typename T> bool myMaxBool(T x, T y) {
