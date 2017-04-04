@@ -16,15 +16,11 @@ int main()
 	vector < Administrative_Worker > a;
 	vector < Course > c;
 	vector < Enrolled > e;
-
-	//m.loadDatabase(s,p,a,c,e);
-	m.generateAll(s, p, a, c, e, 100);
-	cout << s.size() << endl;
-	//prof.generate(p,2000);
-	//course.generate(c,100,p);
+	//
+	/* */
+	m.loadDatabase(s,p,a,c,e);
 	//course.showCourse(c);
-	//enrl.showEnrolled(e);
-
+	m.login();
 	system("pause");
     return 0;
 }

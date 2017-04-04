@@ -230,6 +230,10 @@ long int Student::getStudentID(){
 string Student::getsEmail(){
     return sEmail;
 }
+void Student::logged() {
+	system("cls");
+	cout << "Logged as student." << endl;
+}
 // --------------------------------- PROFESSOR METHODS -----------------------------
 Professor::Professor(){ // constructor
     ProfessorID = 0;
@@ -437,6 +441,10 @@ string Professor::getpEmail(){
 }
 string Professor::getTitle(){
     return title;
+}
+void Professor::logged() {
+	system("cls");
+	cout << "Logged as professor." << endl;
 }
 // ----------------------------- ADMINISTRATIVE WORKERS ----------------------------
 Administrative_Worker::Administrative_Worker(){ // constructor
@@ -646,13 +654,17 @@ string Administrative_Worker::getawEmail(){
 string Administrative_Worker::getJobTitle(){
     return jobTitle;
 }
+void Administrative_Worker::logged() {
+	system("cls");
+	cout << "Logged as administrative worker" << endl;
+}
 // ---------------------------- COURSE METHODS ----------------------------------
 Course::Course(){ // constructor
     semester = 0;
     CourseID = 0;
-    name = "Nie wybrano nazwy kursu";
+    name = "No_name";
     examDate = "00.00.0000";
-    pID = 1000;
+    pID = 9999;
 }
 Course::~Course(){} 
 
@@ -902,11 +914,13 @@ void menu::loadDatabase(vector<Student>& s, vector<Professor>& p, vector<Adminis
 	prof.load(p);
 	adm_worker.load(a);
 	course.load(c);
+	enrl.load(e);
 
 	cout << "\nLoaded " << s.size() << " students.\n";
 	cout << "Loaded " << p.size() << " professors.\n";
 	cout << "Loaded " << a.size() << " administrative workers.\n";
 	cout << "Loaded " << c.size() << " courses.\n";
+	cout << "Loaded " << e.size() << " enrolled pairs.\n";
 }
 void menu::gen(vector<Professor>& vec) {
 	ofstream file;
@@ -944,10 +958,34 @@ void menu::generateAll(vector<Student>& s, vector<Professor>& p, vector<Administ
 	stud.generate(s, howMany);
 	prof.generate(p, howMany/16);
 	adw.generate(a, howMany/100);
-	course.generate(c, 900, p);
+	course.generate(c, 700, p);
 	enrl.generate(s, c, e);
 }
+void menu::login() {
+	system("cls");
+	cout << "Hi! Who are you?\n1. Student.\n2. Professor.\n3. Administrative worker.\n\nInput: " << endl;
+	int input;
+	string sinput;
+	cin >> sinput;
 
+	if (sinput.size() == 1 && isdigit(sinput[0])) {
+		input = stoi(sinput);
+	}
+
+	if (input == 1) {
+		Student s;
+		s.logged();
+	}
+	else if (input == 2) {
+		Professor p;
+		p.logged();
+	}
+	else if (input == 3) {
+		Administrative_Worker a;
+		a.logged();
+	}
+	else login();
+}
 /* * /
 template <typename T> bool myMaxBool(T x, T y) {
 return x > y;

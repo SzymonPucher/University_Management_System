@@ -47,6 +47,7 @@ public:
     void setsEmail(string x);
     long int getStudentID();
     string getsEmail();
+	void logged();
 };
 
 class Professor: public Person {
@@ -67,6 +68,7 @@ public:
     long int getProfessorID();
     string getpEmail();
     string getTitle();
+	void logged();
 };
 
 class Administrative_Worker: public Person {
@@ -87,6 +89,7 @@ public:
     long int getAWID();
     string getawEmail();
     string getJobTitle();
+	void logged();
 };
 
 class Course {
@@ -145,6 +148,7 @@ public:
 	void loadDatabase(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e);
 	void gen(vector<Professor>& s);
 	void generateAll(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e, unsigned int howMany);
+	void login();
 private:
 
 };
