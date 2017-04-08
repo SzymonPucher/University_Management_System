@@ -9,6 +9,12 @@
 
 using namespace std;
 
+class Student;
+class Professor;
+class Administrative_Worker;
+class Course;
+class Enrolled;
+
 class Person {
 protected:
     long long int pesel;
@@ -42,12 +48,17 @@ public:
 	void load(vector<Student>& s);
 	void generate(vector<Student>& s, int howMany);
 	void save(vector<Student>& vec);
+	void showStud();
 	void showStud(vector<Student>& vec);
     void setStudentID(long int x);
     void setsEmail(string x);
     long int getStudentID();
     string getsEmail();
-	void logged();
+	void showMyCourses(vector<Course>& c, vector<Enrolled>& e);
+	void courseEnroll(vector<Course>& c, vector<Enrolled>& e);
+	void courseDisenroll(vector<Course>& c, vector<Enrolled>& e);
+	void showMyProfessors(vector<Professor>& p, vector<Course>& c, vector<Enrolled>& e);
+	void logged(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e);
 };
 
 class Professor: public Person {
@@ -61,6 +72,8 @@ public:
 	void load(vector<Professor>& p);
 	void generate(vector<Professor>& vec, int howMany);
 	void save(vector<Professor>& vec);
+	void showProf();
+	void showProf(vector<Professor>& vec, int ID);
 	void showProf(vector<Professor>& vec);
     void setProfessorID(long int x);
     void setpEmail(string x);
@@ -148,7 +161,7 @@ public:
 	void loadDatabase(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e);
 	void gen(vector<Professor>& s);
 	void generateAll(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e, unsigned int howMany);
-	void login();
+	void login(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e);
 private:
 
 };

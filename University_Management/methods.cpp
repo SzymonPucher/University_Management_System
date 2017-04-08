@@ -207,6 +207,14 @@ void Student::save(vector<Student>& vec) {
 	}
 	file.close();
 }
+void Student::showStud() {
+	cout << "\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail" << endl;
+	cout << pesel << "\t" << fName << "\t";
+	if (fName.length() < 8) cout << "\t";
+	cout << lName << "\t";
+	if (lName.length() < 8) cout << "\t";
+	cout << gender << "\t" << dateOfBirth << "\t" << StudentID << "\t\t" << sEmail << endl;
+}
 void Student::showStud(vector<Student>& vec){
 	int size = vec.size();
 	cout << "\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail" << endl;
@@ -215,7 +223,7 @@ void Student::showStud(vector<Student>& vec){
 		if (vec[i].fName.length() < 8) cout << "\t";
 		cout << vec[i].lName << "\t";
 		if (vec[i].lName.length() < 8) cout << "\t";
-		cout << vec[i].gender << "\t" << vec[i].dateOfBirth << "\t" << vec[i].StudentID << "\t\t" << vec[i].sEmail << endl;
+		cout << vec[i].gender << "\t" << vec[i].dateOfBirth << "\t" << vec[i].StudentID << "\t\t" << vec[i].sEmail << endl << endl;
 	}
 }
 void Student::setStudentID(long int x){
@@ -230,9 +238,84 @@ long int Student::getStudentID(){
 string Student::getsEmail(){
     return sEmail;
 }
-void Student::logged() {
+
+void Student::showMyCourses(vector<Course>& c, vector<Enrolled>& e){
+	cout << "\nCourseID\tSemester\tName\t\t\t\t\tpID\tExam date" << endl;
+	for (int i = 0; i<c.size(); i++)
+		for (int j = 0; j<e.size(); j++)
+			if (getStudentID() == e[j].getStudID() && c[i].getCID() == e[j].getCID())
+				c[i].showCourse();
+}
+void Student::courseEnroll(vector<Course>& c, vector<Enrolled>& e) {
+	int input;
+	cin >> input;
+	try {
+		for (int j = 0; j < e.size(); j++)
+			if (getStudentID() == e[j].getStudID() && input == e[j].getCID())
+				throw "You are already enrolled for this course";
+	}
+	catch (const char* s) {
+		cout << s << endl;
+		return;
+	}
+	Enrolled enrl;
+	enrl.setCourseID(input);
+	enrl.setStudID(getStudentID());
+	e.push_back(enrl);
+	cout << "You successfully enrolled to a course with ID = " << input << endl;
+}
+void Student::courseDisenroll(vector<Course>& c, vector<Enrolled>& e) {
+	int input;
+	cin >> input;
+
+	for (int j = 0; j < e.size(); j++)
+		if (getStudentID() == e[j].getStudID() && input == e[j].getCID()) {
+			e.erase(e.begin()+j);
+			cout << "Enrollment to a course with ID " << input << " was deleted." << endl;
+			return;
+		}
+	cout << "You aren't enrolled for this course." << endl;
+}
+void Student::showMyProfessors(vector<Professor>& p, vector<Course>& c, vector<Enrolled>& e) {
+	cout << "PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail" << endl;
+	Professor prof;
+	for (int i = 0; i<c.size(); i++)
+		for (int j = 0; j<e.size(); j++)
+			if (getStudentID() == e[j].getStudID() && c[i].getCID() == e[j].getCID()) 
+				prof.showProf(p, c[i].getPID());
+}
+void Student::logged(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	int input;
+	
 	system("cls");
-	cout << "Logged as student." << endl;
+	cout << "Logged as student with ID: " << getStudentID() << endl;
+	cout << "1. Show my info.\n2. Show my courses\n3. Enroll to a course.\n4. Disenroll from a course.\n5. Show my professors.\n6. Logout\n7. Exit." << endl;
+	cin >> input;
+	if (input == 1) {
+		showStud();
+	}
+	if (input == 2) {
+		showMyCourses(c, e);
+	}
+	if (input == 3) {
+		courseEnroll(c, e);
+	}
+	if (input == 4) {
+		courseDisenroll(c, e);
+	}
+	if (input == 5) {
+		showMyProfessors(p, c, e);
+	}
+	if (input == 6) {
+		menu m;
+		m.login(s, p, a, c, e);
+	}
+	if (input == 7) {
+		exit(0);
+	}
+	cout << endl << endl;
+	system("pause");
+	logged(s, p, a, c, e);
 }
 // --------------------------------- PROFESSOR METHODS -----------------------------
 Professor::Professor(){ // constructor
@@ -409,6 +492,34 @@ void Professor::save(vector<Professor>& vec) {
 		file << vec[i].gender << "\t\t" << vec[i].dateOfBirth << "\t" << vec[i].ProfessorID << "\t\t" << vec[i].pEmail << endl;
 	}
 	file.close();
+}
+void Professor::showProf() {
+
+	cout << "PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail" << endl;
+	cout << pesel << "\t" << title << "\t";
+	if (title.length() < 16) cout << "\t";
+	if (title.length() < 8) cout << "\t";
+	cout << fName << "\t";
+	if (fName.length() < 8) cout << "\t";
+	cout << lName << "\t";
+	if (lName.length() < 8) cout << "\t";
+	cout << gender << "\t" << dateOfBirth << "\t" << ProfessorID << "\t\t" << pEmail << endl;
+
+}
+void Professor::showProf(vector<Professor>& vec, int ID) {
+	int size = vec.size();
+	for (int i = 0; i < size; i++) {
+		if (ID == vec[i].getProfessorID()) {
+			cout << vec[i].pesel << "\t" << vec[i].title << "\t";
+			if (vec[i].title.length() < 16) cout << "\t";
+			if (vec[i].title.length() < 8) cout << "\t";
+			cout << vec[i].fName << "\t";
+			if (vec[i].fName.length() < 8) cout << "\t";
+			cout << vec[i].lName << "\t";
+			if (vec[i].lName.length() < 8) cout << "\t";
+			cout << vec[i].gender << "\t" << vec[i].dateOfBirth << "\t" << vec[i].ProfessorID << "\t\t" << vec[i].pEmail << endl;
+		}
+	}
 }
 void Professor::showProf(vector<Professor>& vec){
 	int size = vec.size();
@@ -808,8 +919,8 @@ void Course::assignProf(vector<Course>& c, vector<Professor>& p) {
 // ---------------------------- ENROLLED METHODS ---------------------------------
 Enrolled::Enrolled(){
     CourseID = 0;
-    StudentID = 100000;
-    grade = 3;
+    StudentID = 0;
+    grade = 0;
 }
 Enrolled::~Enrolled(){}
 
@@ -961,35 +1072,71 @@ void menu::generateAll(vector<Student>& s, vector<Professor>& p, vector<Administ
 	course.generate(c, 700, p);
 	enrl.generate(s, c, e);
 }
-void menu::login() {
+void menu::login(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
 	system("cls");
-	cout << "Hi! Who are you?\n1. Student.\n2. Professor.\n3. Administrative worker.\n\nInput: " << endl;
-	int input;
+	cout << "Hi! Welcome to Univesrity Management System?\nLogin: ";
+	int input = 0, i;
+	bool test = true;
 	string sinput;
+
 	cin >> sinput;
-
-	if (sinput.size() == 1 && isdigit(sinput[0])) {
-		input = stoi(sinput);
+	int n = sinput.size()-1;
+	while (n--) {
+		if (!isdigit(sinput[n])) {
+			test = false;
+			login(s, p, a, c, e);
+		}
 	}
 
-	if (input == 1) {
-		Student s;
-		s.logged();
+	if (sinput.size() > 3  && sinput.size() < 7 && test) input = stoi(sinput);
+	else login(s, p, a, c, e);
+	test = false;
+	if (input >= 100000 && input < 1000000) {
+		for (i = 0; i < s.size(); i++) {
+			if (s[i].getStudentID() == input) {
+				test = true;
+				break;
+			}
+		}
+		if (test) {
+			Student stud = s[i];
+			stud.logged(s,p,a,c,e);
+		}
+		else login(s, p, a, c, e);
 	}
-	else if (input == 2) {
-		Professor p;
-		p.logged();
+	else if (input > 10000) {
+		for (i = 0; i < p.size(); i++) {
+			if (p[i].getProfessorID() == input) {
+				test = true;
+				break;
+			}
+		}
+		if (test) {
+			Professor prof = p[i];
+			prof.logged();
+		}
+		else login(s, p, a, c, e);
+		
 	}
-	else if (input == 3) {
-		Administrative_Worker a;
-		a.logged();
+	else if (input > 1000) {
+		for (i = 0; i < a.size(); i++) {
+			if (a[i].getAWID() == input) {
+				test = true;
+				break;
+			}
+		}
+		if (test) {
+			Administrative_Worker aw = a[i];
+			aw.logged();
+		}
+		else login(s, p, a, c, e);
+		
 	}
-	else login();
+	else login(s,p,a,c,e);
 }
+
 /* * /
-template <typename T> bool myMaxBool(T x, T y) {
-return x > y;
-}
+
 void menu::addStud(){
 string ts;
 long long int ti;
@@ -1328,7 +1475,7 @@ int x;
 string s1,s2;
 cout << "From which table: \n1. Students\n2. Professors\n3. Administrative workers\n4. Courses\n\nYour choice: ";
 cin >> x;
-if (x==1){/* * /
+if (x==1){
 
 cout << "Like which value: ";
 cin >> s1;
@@ -1364,7 +1511,7 @@ s[i].showStud();
 }
 }
 cout << endl << endl;
-/* * /
+
 if (s1 == "Fname=Katie"){
 cout <<"\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail"<<endl;
 
@@ -1372,7 +1519,6 @@ for(int i=0; i<s.size(); i++){
 if(s[i].getFName() == "Katie") s[i].showStud();
 }
 cout << endl << endl;
-}/* * /
 }
 if (x==2){
 string s3;
@@ -1420,11 +1566,7 @@ break;
 }
 }
 else if(x==2){
-cout <<"CourseID\tSemester\tName\t\t\t\t\tpID\tExam date"<<endl;
-for(int i=0; i<c.size(); i++)
-for(int j=0; j<e.size(); j++)
-if(ID == e[j].getStudID() && c[i].getCID() == e[j].getCID())
-c[i].showCourse();
+
 }
 else if(x==3){
 int CID;
@@ -1590,5 +1732,4 @@ else if(x==3)
 menuAW(aw[rand() % aw.size()].getAWID());
 else { system("cls"); login(); }
 }
-
-*/
+/* */
