@@ -208,7 +208,7 @@ void Student::save(vector<Student>& vec) {
 	file.close();
 }
 void Student::showStud() {
-	cout << "\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail" << endl;
+	//cout << "\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail" << endl;
 	cout << pesel << "\t" << fName << "\t";
 	if (fName.length() < 8) cout << "\t";
 	cout << lName << "\t";
@@ -553,9 +553,53 @@ string Professor::getpEmail(){
 string Professor::getTitle(){
     return title;
 }
-void Professor::logged() {
+
+void Professor::showMyCourses(vector<Course>& c) {
+	cout << "\nCourseID\tSemester\tName\t\t\t\t\tpID\tExam date" << endl;
+	for (int i = 0; i<c.size(); i++)
+		if (c[i].getPID() == getProfessorID())
+			c[i].showCourse();
+}
+void Professor::showMyStudents(vector<Student>& s, vector<Course>& c, vector<Enrolled>& e) {
+	
+	for (int i = 0; i < c.size(); i++) {
+		if (c[i].getPID() == getProfessorID()) { // finds courses professor has
+			cout << "\nCourseID\tSemester\tName\t\t\t\t\tpID\tExam date" << endl;
+			c[i].showCourse();
+			cout << "\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail" << endl;
+			for (int j = 0; j < s.size(); j++) // finds all the students that enrolled to professors course
+				for (int k = 0; k < e.size(); k++)
+					if (e[k].getStudID() == s[j].getStudentID() && c[i].getCID() == e[k].getCID())
+						s[j].showStud();
+		}
+	}
+}
+void Professor::logged(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	int input;
+
 	system("cls");
-	cout << "Logged as professor." << endl;
+	cout << "Logged as professor with ID: " << getProfessorID() << endl;
+	cout << "1. Show my info.\n2. Show my courses\n3. Show my students.\n4. Logout\n5. Exit." << endl;
+	cin >> input;
+	if (input == 1) {
+		showProf();
+	}
+	if (input == 2) {
+		showMyCourses(c);
+	}
+	if (input == 3) {
+		showMyStudents(s, c, e);
+	}
+	if (input == 4) {
+		menu m;
+		m.login(s, p, a, c, e);
+	}
+	if (input == 5) {
+		exit(0);
+	}
+	cout << endl << endl;
+	system("pause");
+	logged(s, p, a, c, e);
 }
 // ----------------------------- ADMINISTRATIVE WORKERS ----------------------------
 Administrative_Worker::Administrative_Worker(){ // constructor
@@ -733,6 +777,18 @@ void Administrative_Worker::save(vector<Administrative_Worker>& vec) {
 	}
 	file.close();
 }
+void Administrative_Worker::showAW() {
+	cout << "PESEL\t\tJob Title\t\tFirst name\tLast name\tGender\tDate of birth\tAdm. Worker ID\tEmail" << endl;
+	cout << pesel << "\t" << jobTitle << "\t";
+	if (jobTitle.length() < 16) cout << "\t";
+	if (jobTitle.length() < 8) cout << "\t";
+	cout << fName << "\t";
+	if (fName.length() < 8) cout << "\t";
+	cout << lName << "\t";
+	if (lName.length() < 8) cout << "\t";
+	cout << gender << "\t" << dateOfBirth << "\t" << AWID << "\t\t" << awEmail << endl;
+
+}
 void Administrative_Worker::showAW(vector<Administrative_Worker>& vec){
 	int size = vec.size();
 	cout << "PESEL\t\tJob Title\t\tFirst name\tLast name\tGender\tDate of birth\tAdm. Worker ID\tEmail" << endl;
@@ -765,9 +821,38 @@ string Administrative_Worker::getawEmail(){
 string Administrative_Worker::getJobTitle(){
     return jobTitle;
 }
-void Administrative_Worker::logged() {
+void Administrative_Worker::logged(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	int input;
+
 	system("cls");
-	cout << "Logged as administrative worker" << endl;
+	cout << "Logged as administrative workers with ID: " << getAWID() << endl;
+	cout << "1. Show my info.\n2. Show my courses\n3. Enroll to a course.\n4. Disenroll from a course.\n5. Show my professors.\n6. Logout\n7. Exit." << endl;
+	cin >> input;
+	if (input == 1) {
+		showAW();
+	}
+	if (input == 2) {
+		//showMyCourses(c, e);
+	}
+	if (input == 3) {
+		//courseEnroll(c, e);
+	}
+	if (input == 4) {
+		//courseDisenroll(c, e);
+	}
+	if (input == 5) {
+		//showMyProfessors(p, c, e);
+	}
+	if (input == 6) {
+		menu m;
+		m.login(s, p, a, c, e);
+	}
+	if (input == 7) {
+		exit(0);
+	}
+	cout << endl << endl;
+	system("pause");
+	logged(s, p, a, c, e);
 }
 // ---------------------------- COURSE METHODS ----------------------------------
 Course::Course(){ // constructor
@@ -1032,6 +1117,7 @@ void menu::loadDatabase(vector<Student>& s, vector<Professor>& p, vector<Adminis
 	cout << "Loaded " << a.size() << " administrative workers.\n";
 	cout << "Loaded " << c.size() << " courses.\n";
 	cout << "Loaded " << e.size() << " enrolled pairs.\n";
+	system("pause");
 }
 void menu::gen(vector<Professor>& vec) {
 	ofstream file;
@@ -1075,7 +1161,7 @@ void menu::generateAll(vector<Student>& s, vector<Professor>& p, vector<Administ
 void menu::login(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
 	system("cls");
 	cout << "Hi! Welcome to Univesrity Management System?\nLogin: ";
-	int input = 0, i;
+	long int input = 0, i;
 	bool test = true;
 	string sinput;
 
@@ -1105,20 +1191,6 @@ void menu::login(vector<Student>& s, vector<Professor>& p, vector<Administrative
 		else login(s, p, a, c, e);
 	}
 	else if (input > 10000) {
-		for (i = 0; i < p.size(); i++) {
-			if (p[i].getProfessorID() == input) {
-				test = true;
-				break;
-			}
-		}
-		if (test) {
-			Professor prof = p[i];
-			prof.logged();
-		}
-		else login(s, p, a, c, e);
-		
-	}
-	else if (input > 1000) {
 		for (i = 0; i < a.size(); i++) {
 			if (a[i].getAWID() == input) {
 				test = true;
@@ -1127,10 +1199,22 @@ void menu::login(vector<Student>& s, vector<Professor>& p, vector<Administrative
 		}
 		if (test) {
 			Administrative_Worker aw = a[i];
-			aw.logged();
+			aw.logged(s, p, a, c, e);
+		}
+		else login(s, p, a, c, e);	
+	}
+	else if (input > 1000) {
+		for (i = 0; i < p.size(); i++) {
+			if (p[i].getProfessorID() == input) {
+				test = true;
+				break;
+			}
+		}
+		if (test) {
+			Professor prof = p[i];
+			prof.logged(s, p, a, c, e);
 		}
 		else login(s, p, a, c, e);
-		
 	}
 	else login(s,p,a,c,e);
 }

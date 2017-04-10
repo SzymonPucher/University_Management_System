@@ -81,7 +81,9 @@ public:
     long int getProfessorID();
     string getpEmail();
     string getTitle();
-	void logged();
+	void showMyCourses(vector<Course>& c);
+	void showMyStudents(vector<Student>& s, vector<Course>& c, vector<Enrolled>& e);
+	void logged(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e);
 };
 
 class Administrative_Worker: public Person {
@@ -95,6 +97,7 @@ public:
 	void load(vector<Administrative_Worker>& a);
 	void generate(vector<Administrative_Worker>& vec, int howMany);
 	void save(vector<Administrative_Worker>& vec);
+	void showAW();
 	void showAW(vector<Administrative_Worker>& vec);
     void setAWID(long int x);
     void setawEmail(string x);
@@ -102,7 +105,7 @@ public:
     long int getAWID();
     string getawEmail();
     string getJobTitle();
-	void logged();
+	void logged(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e);
 };
 
 class Course {
