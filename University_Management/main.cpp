@@ -11,8 +11,16 @@ int main()
 	vector < Enrolled > e;
 
 	menu m;
-	m.loadDatabase(s,p,a,c,e);
-	m.login(s,p,a,c,e);
 
+	/* * /
+	m.generateAll(s, p, a, c, e, 35000);
+	m.saveAll(s, p, a, c, e);
+	/* */
+
+	m.loadDatabase(s, p, a, c, e);
+	m.login(s,p,a,c,e);
+	//s[0].showStud(s);
+
+	system("pause");
     return 0;
 }

@@ -1,9 +1,5 @@
 #include "classes.h"
-
-
-
 using namespace std;
-
  // --------------------------------------- PERSON METHODS ------------------------------------------
 Person::Person(){ 
     pesel = 11111111111;
@@ -11,9 +7,10 @@ Person::Person(){
     lName = "No Lname";
     gender = "Male";
     dateOfBirth = "00.00.0000";
+	ID = 0;
 }
 Person::~Person(){} 
-
+// SETTERS
 void Person::setPesel(long long int x){
     pesel = x;
 }
@@ -29,6 +26,10 @@ void Person::setGender(string x){
 void Person::setDateOfBirth(string x){
     dateOfBirth = x;
 }
+void Person::setID(int x) {
+	ID = x;
+}
+// GETTERS
 long long int Person::getPesel(){
     return pesel;
 }
@@ -38,21 +39,108 @@ string Person::getFName(){
 string Person::getLName(){
     return lName;
 }
+string Person::getGender() {
+	return gender;
+}
 string Person::getDateOfBirth(){
     return dateOfBirth;
 }
-string Person::getGender(){
-    return gender;
+int Person::getID() {
+	return ID;
+}
+// CREATE
+bool Person::create(){
+	string ts;
+	long long int ti;
+	try {
+		cout << "\n\nAdding new account.\n\nPESEL: ";
+		cin >> ti;
+		if (ti < 10000000000 || ti > 100000000000)
+			throw "Wrong pesel format!";
+		setPesel(ti);
+
+		cout << "\nFirst name: ";
+		cin >> ts;
+		if (ts.length() > 23)
+			throw "First name is too long!";
+		setFName(ts);
+
+		cout << "\nLast name: ";
+		cin >> ts;
+		if (ts.length() > 23)
+			throw "Last name is too long!";
+		setLName(ts);
+
+		cout << "\nGender (M/F): ";
+		cin >> ts;
+		if (ts != "M" && ts != "F")
+			throw "Gender should be equal to M or F!";
+		if (ts == "M") ts = "Male";
+		if (ts == "F") ts = "Female";
+		setGender(ts);
+
+		cout << "\nDate of birth: ";
+		cin >> ts;
+		if (ts.length() > 10 || ts.length() < 8)
+			throw "Wrong format, too short or too long!";
+		setDateOfBirth(ts);
+	}
+	catch (const char *s) { cout << s << endl; return false; }
+	return true;
+}
+// UPDATE
+bool Person::updatePerson(int input) {
+
+	string ts;
+	long long int ti;
+	try {
+		cout << "New ";
+
+		if (input == 1) {
+			cout << "\nFirst name: ";
+			cin >> ts;
+			if (ts.length() > 23)
+				throw "First name is too long!";
+			setFName(ts);
+		}
+		if (input == 2) {
+			cout << "\nLast name: ";
+			cin >> ts;
+			if (ts.length() > 23)
+				throw "Last name is too long!";
+			setLName(ts);
+		}
+		if (input == 3) {
+			cout << "\nGender (M/F): ";
+			cin >> ts;
+			if (ts != "M" && ts != "F")
+				throw "Gender should be equal to M or F!";
+			if (ts == "M") ts = "Male";
+			if (ts == "F") ts = "Female";
+			setGender(ts);
+		}
+		if (input == 4) {
+			cout << "\nDate of birth: ";
+			cin >> ts;
+			if (ts.length() > 10 || ts.length() < 8)
+				throw "Wrong format, too short or too long!";
+			setDateOfBirth(ts);
+		}
+	}
+	catch (const char *s) { cout << s << endl; return false; }
+	return true;
 }
  // --------------------------------------- STUDENT METHODS ------------------------------------------
-Student::Student(){ // constructor;
-    StudentID = 0;
-    sEmail = "0@student.email.com";
-	//vector<Course*> coursesTaken(10);
-	Course* ct;
-}
+Student::Student(){}
 Student::~Student(){}
-
+// GETTERS
+string Student::getEmail() {
+	string email;
+	email = to_string(ID);
+	email.append("@student.email.com");
+	return email;
+}
+// DATABASE
 void Student::load(vector<Student>& s){
 	fstream studDB;
 	studDB.open("database/Students.txt",ios::in);
@@ -62,7 +150,7 @@ void Student::load(vector<Student>& s){
         exit(0);
     }
 	string line;
-	for(int i = 0; i < 7; i++)
+	for(int i = 0; i < 6; i++)
 		studDB >> line;
 	Student stud;
 	while (!studDB.eof()) {
@@ -73,8 +161,7 @@ void Student::load(vector<Student>& s){
 		studDB >> stud.gender;
 		studDB >> stud.dateOfBirth;
 		studDB >> line;
-		stud.StudentID = atoi(line.c_str());
-		studDB >> stud.sEmail;
+		stud.ID = atoi(line.c_str());
 		
 		s.push_back(stud);
 	}
@@ -167,14 +254,7 @@ void Student::generate(vector<Student>& s, int howMany) {
 		stud.setDateOfBirth(temp);
 		temp.clear();
 
-		stud.setStudentID(sid);
-		temp = to_string(sid++);
-		temp.append("@student.email.com");
-		stud.setsEmail(temp);
-		temp.clear();
-
-
-
+		stud.setID(sid++);
 		s.push_back(stud);
 		
 	}
@@ -195,7 +275,7 @@ void Student::save(vector<Student>& vec) {
 	ofstream file;
 	file.open("database/Students.txt");
 	
-	file << "PESEL\t\tFirst_name\tLast_name\tGender\t\tDate_of_birth\tStudentID\tEmail\n" << endl;
+	file << "PESEL\t\tFirst_name\tLast_name\tGender\t\tDate_of_birth\tStudentID\n" << endl;
 	int size = vec.size();
 	
 	for (int i = 0; i < size; i++) {
@@ -203,56 +283,64 @@ void Student::save(vector<Student>& vec) {
 		if (vec[i].fName.length() < 8) file << "\t";
 		file << vec[i].lName << "\t";
 		if (vec[i].lName.length() < 8) file << "\t";
-		file << vec[i].gender << "\t\t" << vec[i].dateOfBirth << "\t" << vec[i].StudentID << "\t\t" << vec[i].sEmail << endl;
+		file << vec[i].gender << "\t\t" << vec[i].dateOfBirth << "\t" << vec[i].ID << endl;
 	}
 	file.close();
 }
+// SHOW
 void Student::showStud() {
 	//cout << "\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail" << endl;
 	cout << pesel << "\t" << fName << "\t";
 	if (fName.length() < 8) cout << "\t";
 	cout << lName << "\t";
 	if (lName.length() < 8) cout << "\t";
-	cout << gender << "\t" << dateOfBirth << "\t" << StudentID << "\t\t" << sEmail << endl;
+	cout << gender << "\t" << dateOfBirth << "\t" << ID << "\t\t" << getEmail() << endl;
 }
 void Student::showStud(vector<Student>& vec){
 	int size = vec.size();
 	cout << "\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail" << endl;
-	for (int i = 0; i < size; i++) {
-		cout << vec[i].pesel << "\t" << vec[i].fName << "\t";
-		if (vec[i].fName.length() < 8) cout << "\t";
-		cout << vec[i].lName << "\t";
-		if (vec[i].lName.length() < 8) cout << "\t";
-		cout << vec[i].gender << "\t" << vec[i].dateOfBirth << "\t" << vec[i].StudentID << "\t\t" << vec[i].sEmail << endl << endl;
-	}
+	for (int i = 0; i < size; i++)
+		vec[i].showStud();
 }
-void Student::setStudentID(long int x){
-    StudentID = x;
-}
-void Student::setsEmail(string x){
-    sEmail = x;
-}
-long int Student::getStudentID(){
-    return StudentID;
-}
-string Student::getsEmail(){
-    return sEmail;
-}
-
-void Student::showMyCourses(vector<Course>& c, vector<Enrolled>& e){
+void Student::showMyCourses(vector<Course>& c, vector<Enrolled>& e) {
 	cout << "\nCourseID\tSemester\tName\t\t\t\t\tpID\tExam date" << endl;
 	for (int i = 0; i<c.size(); i++)
 		for (int j = 0; j<e.size(); j++)
-			if (getStudentID() == e[j].getStudID() && c[i].getCID() == e[j].getCID())
+			if (ID == e[j].getStudID() && c[i].getCID() == e[j].getCID())
 				c[i].showCourse();
 }
+void Student::showMyProfessors(vector<Professor>& p, vector<Course>& c, vector<Enrolled>& e) {
+	cout << "PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail" << endl;
+	Professor prof;
+	for (int i = 0; i<c.size(); i++)
+		for (int j = 0; j<e.size(); j++)
+			if (getID() == e[j].getStudID() && c[i].getCID() == e[j].getCID())
+				prof.showProf(p, c[i].getPID());
+}
+// UPDATE
+void Student::update() {
+
+	int input;
+	cout << "\n1. Change first name.\n2. Change last name.\n3. Change gender.\n4. Change birth date.\nInput: ";
+	cin >> input;
+
+	if (input >= 1 && input <= 4) {
+		updatePerson(input);
+	}
+}
+// COURSE METHODS
 void Student::courseEnroll(vector<Course>& c, vector<Enrolled>& e) {
 	int input;
 	cin >> input;
 	try {
 		for (int j = 0; j < e.size(); j++)
-			if (getStudentID() == e[j].getStudID() && input == e[j].getCID())
+			if (ID == e[j].getStudID() && input == e[j].getCID())
 				throw "You are already enrolled for this course";
+		/* * /
+		for (int i = 0; i < c.size(); i++)
+			if (c[i].getCID() == input)
+				throw "Course with such ID does not exist!";
+		/* */
 	}
 	catch (const char* s) {
 		cout << s << endl;
@@ -260,7 +348,7 @@ void Student::courseEnroll(vector<Course>& c, vector<Enrolled>& e) {
 	}
 	Enrolled enrl;
 	enrl.setCourseID(input);
-	enrl.setStudID(getStudentID());
+	enrl.setStudID(getID());
 	e.push_back(enrl);
 	cout << "You successfully enrolled to a course with ID = " << input << endl;
 }
@@ -269,27 +357,20 @@ void Student::courseDisenroll(vector<Course>& c, vector<Enrolled>& e) {
 	cin >> input;
 
 	for (int j = 0; j < e.size(); j++)
-		if (getStudentID() == e[j].getStudID() && input == e[j].getCID()) {
+		if (getID() == e[j].getStudID() && input == e[j].getCID()) {
 			e.erase(e.begin()+j);
 			cout << "Enrollment to a course with ID " << input << " was deleted." << endl;
 			return;
 		}
 	cout << "You aren't enrolled for this course." << endl;
 }
-void Student::showMyProfessors(vector<Professor>& p, vector<Course>& c, vector<Enrolled>& e) {
-	cout << "PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail" << endl;
-	Professor prof;
-	for (int i = 0; i<c.size(); i++)
-		for (int j = 0; j<e.size(); j++)
-			if (getStudentID() == e[j].getStudID() && c[i].getCID() == e[j].getCID()) 
-				prof.showProf(p, c[i].getPID());
-}
+// LOGIN
 void Student::logged(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
 	int input;
 	
 	system("cls");
-	cout << "Logged as student with ID: " << getStudentID() << endl;
-	cout << "1. Show my info.\n2. Show my courses\n3. Enroll to a course.\n4. Disenroll from a course.\n5. Show my professors.\n6. Logout\n7. Exit." << endl;
+	cout << "Logged as student with ID: " << getID() << endl;
+	cout << "1. Show my info.\n2. Show my courses\n3. Enroll to a course.\n4. Disenroll from a course.\n5. Show my professors.\n6. Logout\n7. Exit.\nInput: ";
 	cin >> input;
 	if (input == 1) {
 		showStud();
@@ -317,13 +398,25 @@ void Student::logged(vector<Student>& s, vector<Professor>& p, vector<Administra
 	system("pause");
 	logged(s, p, a, c, e);
 }
-// --------------------------------- PROFESSOR METHODS -----------------------------
-Professor::Professor(){ // constructor
-    ProfessorID = 0;
-    pEmail = "0@professor.email.com";
-}
-Professor::~Professor(){} // destructor
 
+// --------------------------------- PROFESSOR METHODS -----------------------------
+Professor::Professor(){}
+Professor::~Professor(){}
+// SETTERS
+void Professor::setTitle(string x) {
+	title = x;
+}
+// GETTERS
+string Professor::getEmail() {
+	string email;
+	email = to_string(ID);
+	email.append("@professor.email.com");
+	return email;
+}
+string Professor::getTitle() {
+	return title;
+}
+// DATABASE
 void Professor::load(vector<Professor>& p){
     fstream profDB;
 	profDB.open("database/Professors.txt",ios::in);
@@ -335,7 +428,7 @@ void Professor::load(vector<Professor>& p){
 
 
     string line;
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 7; i++)
 		profDB >> line;
 	Professor prof;
 	while (!profDB.eof()) {
@@ -347,8 +440,7 @@ void Professor::load(vector<Professor>& p){
 		profDB >> prof.gender;
 		profDB >> prof.dateOfBirth;
 		profDB >> line;
-		prof.ProfessorID = atoi(line.c_str());
-		profDB >> prof.pEmail;
+		prof.ID = atoi(line.c_str());
 
 		p.push_back(prof);
 	}
@@ -407,7 +499,7 @@ void Professor::generate(vector<Professor>& vec, int howMany) {
 	t_file.close();
 
 	Professor prof;
-	int y, m, d, pes5dig, sid = 1000;
+	int y, m, d, pes5dig, sid = 10000;
 	string temp;
 	srand(time(NULL));
 	for (int i = 0; i < howMany; i++) {
@@ -451,11 +543,7 @@ void Professor::generate(vector<Professor>& vec, int howMany) {
 		prof.setDateOfBirth(temp);
 		temp.clear();
 
-		prof.setProfessorID(sid);
-		temp = to_string(sid++);
-		temp.append("@professor.email.com");
-		prof.setpEmail(temp);
-		temp.clear();
+		prof.setID(sid++);
 
 		prof.setTitle(t[rand()%t.size()]);
 
@@ -480,7 +568,7 @@ void Professor::save(vector<Professor>& vec) {
 	file.open("database/Professors.txt");
 
 	int size = vec.size();
-	file << "PESEL\t\tTitle\t\t\tFirst_name\tLast_name\tGender\t\tDate_of_birth\tProfessorID\tEmail\n" << endl;
+	file << "PESEL\t\tTitle\t\t\tFirst_name\tLast_name\tGender\t\tDate_of_birth\tProfessorID\n" << endl;
 	for (int i = 0; i < size; i++) {
 		file << vec[i].pesel << "\t" << vec[i].title << "\t";
 		if (vec[i].title.length() < 16) file << "\t";
@@ -489,13 +577,14 @@ void Professor::save(vector<Professor>& vec) {
 		if (vec[i].fName.length() < 8) file << "\t";
 		file << vec[i].lName << "\t";
 		if (vec[i].lName.length() < 8) file << "\t";
-		file << vec[i].gender << "\t\t" << vec[i].dateOfBirth << "\t" << vec[i].ProfessorID << "\t\t" << vec[i].pEmail << endl;
+		file << vec[i].gender << "\t\t" << vec[i].dateOfBirth << "\t" << vec[i].ID << endl;
 	}
 	file.close();
 }
+// SHOW
 void Professor::showProf() {
 
-	cout << "PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail" << endl;
+	//cout << "PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail" << endl;
 	cout << pesel << "\t" << title << "\t";
 	if (title.length() < 16) cout << "\t";
 	if (title.length() < 8) cout << "\t";
@@ -503,84 +592,67 @@ void Professor::showProf() {
 	if (fName.length() < 8) cout << "\t";
 	cout << lName << "\t";
 	if (lName.length() < 8) cout << "\t";
-	cout << gender << "\t" << dateOfBirth << "\t" << ProfessorID << "\t\t" << pEmail << endl;
+	cout << gender << "\t" << dateOfBirth << "\t" << ID << "\t\t" << getEmail() << endl;
 
 }
-void Professor::showProf(vector<Professor>& vec, int ID) {
+void Professor::showProf(vector<Professor>& vec, int PID) {
 	int size = vec.size();
-	for (int i = 0; i < size; i++) {
-		if (ID == vec[i].getProfessorID()) {
-			cout << vec[i].pesel << "\t" << vec[i].title << "\t";
-			if (vec[i].title.length() < 16) cout << "\t";
-			if (vec[i].title.length() < 8) cout << "\t";
-			cout << vec[i].fName << "\t";
-			if (vec[i].fName.length() < 8) cout << "\t";
-			cout << vec[i].lName << "\t";
-			if (vec[i].lName.length() < 8) cout << "\t";
-			cout << vec[i].gender << "\t" << vec[i].dateOfBirth << "\t" << vec[i].ProfessorID << "\t\t" << vec[i].pEmail << endl;
-		}
-	}
+	//cout << "PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail" << endl;
+	for (int i = 0; i < size; i++)
+		if (PID == vec[i].getID()) 
+			vec[i].showProf();
 }
-void Professor::showProf(vector<Professor>& vec){
+void Professor::showProf(vector<Professor>& vec) {
 	int size = vec.size();
 	cout << "PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail" << endl;
-	for (int i = 0; i < size; i++) {
-		cout << vec[i].pesel << "\t" << vec[i].title << "\t";
-		if (vec[i].title.length() < 16) cout << "\t";
-		if (vec[i].title.length() < 8) cout << "\t";
-		cout << vec[i].fName << "\t";
-		if (vec[i].fName.length() < 8) cout << "\t";
-		cout << vec[i].lName << "\t";
-		if (vec[i].lName.length() < 8) cout << "\t";
-		cout << vec[i].gender << "\t" << vec[i].dateOfBirth << "\t" << vec[i].ProfessorID << "\t\t" << vec[i].pEmail << endl;
-	}
+	for (int i = 0; i < size; i++) 
+		vec[i].showProf();
 }
-void Professor::setProfessorID(long int x){
-    ProfessorID = x;
-}
-void Professor::setpEmail(string x){
-    pEmail = x;
-}
-void Professor::setTitle(string x){
-    title = x;
-}
-long int Professor::getProfessorID(){
-    return ProfessorID;
-}
-string Professor::getpEmail(){
-    return pEmail;
-}
-string Professor::getTitle(){
-    return title;
-}
-
 void Professor::showMyCourses(vector<Course>& c) {
-	cout << "\nCourseID\tSemester\tName\t\t\t\t\tpID\tExam date" << endl;
+	cout << "\nCourseID\tName\t\t\t\t\tpID\tExam date" << endl;
 	for (int i = 0; i<c.size(); i++)
-		if (c[i].getPID() == getProfessorID())
+		if (c[i].getPID() == getID())
 			c[i].showCourse();
 }
 void Professor::showMyStudents(vector<Student>& s, vector<Course>& c, vector<Enrolled>& e) {
-	
 	for (int i = 0; i < c.size(); i++) {
-		if (c[i].getPID() == getProfessorID()) { // finds courses professor has
-			cout << "\nCourseID\tSemester\tName\t\t\t\t\tpID\tExam date" << endl;
+		if (c[i].getPID() == getID()) { // finds courses professor has
+			cout << "----------------------------------------------------------\n\nCourseID\tName\t\t\t\t\tpID\tExam date" << endl;
 			c[i].showCourse();
 			cout << "\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail" << endl;
 			for (int j = 0; j < s.size(); j++) // finds all the students that enrolled to professors course
 				for (int k = 0; k < e.size(); k++)
-					if (e[k].getStudID() == s[j].getStudentID() && c[i].getCID() == e[k].getCID())
+					if (e[k].getStudID() == s[j].getID() && c[i].getCID() == e[k].getCID())
 						s[j].showStud();
 		}
 	}
 }
+// UPDATE
+void Professor::update() {
+	int input;
+	cout << "\n1. Change first name.\n2. Change last name.\n3. Change gender.\n4. Change birth date.\n5. Change title.\nInput: ";
+	cin >> input;
+
+	if (input >= 1 && input <= 4) {
+		updatePerson(input);
+	}
+	if (input == 5) {
+		string ts;
+		cout << "\nNew name for course with ID " << getID() << " is: ";
+		cin >> ts;
+		setTitle(ts);
+	}
+
+}
+// LOGIN
 void Professor::logged(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
 	int input;
 
 	system("cls");
-	cout << "Logged as professor with ID: " << getProfessorID() << endl;
-	cout << "1. Show my info.\n2. Show my courses\n3. Show my students.\n4. Logout\n5. Exit." << endl;
+	cout << "Logged as professor with ID: " << getID() << endl;
+	cout << "1. Show my info.\n2. Show my courses\n3. Show my students.\n4. Logout\n5. Exit.\nInput: ";
 	cin >> input;
+
 	if (input == 1) {
 		showProf();
 	}
@@ -601,13 +673,25 @@ void Professor::logged(vector<Student>& s, vector<Professor>& p, vector<Administ
 	system("pause");
 	logged(s, p, a, c, e);
 }
-// ----------------------------- ADMINISTRATIVE WORKERS ----------------------------
-Administrative_Worker::Administrative_Worker(){ // constructor
-    AWID = 0;
-    awEmail = "0@aw.email.com";
-}
-Administrative_Worker::~Administrative_Worker(){} // destructor
 
+// ----------------------------- ADMINISTRATIVE WORKERS ----------------------------
+Administrative_Worker::Administrative_Worker(){}
+Administrative_Worker::~Administrative_Worker(){} // destructor
+// SETTERS
+void Administrative_Worker::setTitle(string x) {
+	title = x;
+}
+// GETTERS
+string Administrative_Worker::getEmail() {
+	string email;
+	email = to_string(ID);
+	email.append("@admwor.email.com");
+	return email;
+}
+string Administrative_Worker::getTitle() {
+	return title;
+}
+// DATABASE
 void Administrative_Worker::load(vector<Administrative_Worker>& a){
     fstream aw;
     aw.open("database/Administrative_Workers.txt",ios::in);
@@ -620,19 +704,18 @@ void Administrative_Worker::load(vector<Administrative_Worker>& a){
 
     string line;
 	Administrative_Worker awork;
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 7; i++)
 		aw >> line;
 	while (!aw.eof()) {
 		aw >> line;
 		awork.pesel = atoll(line.c_str());
-		aw >> awork.jobTitle;
+		aw >> awork.title;
 		aw >> awork.fName;
 		aw >> awork.lName;
 		aw >> awork.gender;
 		aw >> awork.dateOfBirth;
 		aw >> line;
-		awork.AWID = atoi(line.c_str());
-		aw >> awork.awEmail;
+		awork.ID = atoi(line.c_str());
 
 		a.push_back(awork);
 	}
@@ -691,7 +774,7 @@ void Administrative_Worker::generate(vector<Administrative_Worker>& vec, int how
 	t_file.close();
 
 	Administrative_Worker aw;
-	int y, m, d, pes5dig, sid = 10000;
+	int y, m, d, pes5dig, sid = 1000;
 	string temp;
 	srand(time(NULL));
 	for (int i = 0; i < howMany; i++) {
@@ -735,13 +818,9 @@ void Administrative_Worker::generate(vector<Administrative_Worker>& vec, int how
 		aw.setDateOfBirth(temp);
 		temp.clear();
 
-		aw.setAWID(sid);
-		temp = to_string(sid++);
-		temp.append("@aw.email.com");
-		aw.setawEmail(temp);
-		temp.clear();
+		aw.setID(sid++);
 
-		aw.setJobTitle(t[rand()%t.size()]);
+		aw.setTitle(t[rand()%t.size()]);
 
 		vec.push_back(aw);
 
@@ -764,84 +843,388 @@ void Administrative_Worker::save(vector<Administrative_Worker>& vec) {
 	file.open("database/Administrative_Workers.txt");
 
 	int size = vec.size();
-	file << "PESEL\t\tJob_Title\t\tFirst_name\tLast_name\tGender\t\tDate_of_birth\tAWID\t\tEmail\n" << endl;
+	file << "PESEL\t\tJob_Title\t\tFirst_name\tLast_name\tGender\t\tDate_of_birth\tID\n" << endl;
 	for (int i = 0; i < size; i++) {
-		file << vec[i].pesel << "\t" << vec[i].jobTitle << "\t";
-		if (vec[i].jobTitle.length() < 16) file << "\t";
-		if (vec[i].jobTitle.length() < 8) file << "\t";
+		file << vec[i].pesel << "\t" << vec[i].title << "\t";
+		if (vec[i].title.length() < 16) file << "\t";
+		if (vec[i].title.length() < 8) file << "\t";
 		file << vec[i].fName << "\t";
 		if (vec[i].fName.length() < 8) file << "\t";
 		file << vec[i].lName << "\t";
 		if (vec[i].lName.length() < 8) file << "\t";
-		file << vec[i].gender << "\t\t" << vec[i].dateOfBirth << "\t" << vec[i].AWID << "\t\t" << vec[i].awEmail << endl;
+		file << vec[i].gender << "\t\t" << vec[i].dateOfBirth << "\t" << vec[i].ID << endl;
 	}
 	file.close();
 }
+// SHOW
 void Administrative_Worker::showAW() {
-	cout << "PESEL\t\tJob Title\t\tFirst name\tLast name\tGender\tDate of birth\tAdm. Worker ID\tEmail" << endl;
-	cout << pesel << "\t" << jobTitle << "\t";
-	if (jobTitle.length() < 16) cout << "\t";
-	if (jobTitle.length() < 8) cout << "\t";
+	//cout << "PESEL\t\tJob Title\t\tFirst name\tLast name\tGender\tDate of birth\tAdm. Worker ID\tEmail" << endl;
+	cout << pesel << "\t" << title << "\t";
+	if (title.length() < 16) cout << "\t";
+	if (title.length() < 8) cout << "\t";
 	cout << fName << "\t";
 	if (fName.length() < 8) cout << "\t";
 	cout << lName << "\t";
 	if (lName.length() < 8) cout << "\t";
-	cout << gender << "\t" << dateOfBirth << "\t" << AWID << "\t\t" << awEmail << endl;
+	cout << gender << "\t" << dateOfBirth << "\t" << ID << "\t\t" << getEmail() << endl;
 
 }
 void Administrative_Worker::showAW(vector<Administrative_Worker>& vec){
 	int size = vec.size();
 	cout << "PESEL\t\tJob Title\t\tFirst name\tLast name\tGender\tDate of birth\tAdm. Worker ID\tEmail" << endl;
-	for (int i = 0; i < size; i++) {
-		cout << vec[i].pesel << "\t" << vec[i].jobTitle << "\t";
-		if (vec[i].jobTitle.length() < 16) cout << "\t";
-		if (vec[i].jobTitle.length() < 8) cout << "\t";
-		cout << vec[i].fName << "\t";
-		if (vec[i].fName.length() < 8) cout << "\t";
-		cout << vec[i].lName << "\t";
-		if (vec[i].lName.length() < 8) cout << "\t";
-		cout << vec[i].gender << "\t" << vec[i].dateOfBirth << "\t" << vec[i].AWID << "\t\t" << vec[i].awEmail << endl;
+	for (int i = 0; i < size; i++)
+		vec[i].showAW();
+}
+void Administrative_Worker::showAccount(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	int input;
+	cout << "1. Show all students.\n2. Show all professors.\n3. Show all administrative workers.\n4. Show all courses.\n5. Show all enrollments." << endl;
+	cout << "6. Show person or course by ID.\n7. Back.\nInput: ";
+	cin >> input;
+
+	if (input == 1)
+		s[0].showStud(s);
+
+	if (input == 2)
+		p[0].showProf(p);
+
+	if (input == 3)
+		a[0].showAW(a);
+
+	if (input == 4)
+		c[0].showCourse(c);
+
+	if (input == 5)
+		e[0].showEnrolled(e);
+
+	if (input == 6)
+		if (showAccountByID(s, p, a, c, e))
+			cout << "\n\nError! Wrong ID!";
+
+	if (input == 7)
+		return;
+	logged(s, p, a, c, e);
+}
+bool Administrative_Worker::showAccountByID(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	int input;
+	cout << "You are searching for particural record in database. Input ID: ";
+	cin >> input;
+
+	if (input >= 100000 && input < 1000000) {
+		for (int i = 0; i < s.size(); i++) {
+			if (s[i].getID() == input) {
+				s[i].showStud();
+				return false;
+			}
+		}
+	}
+	else if (input >= 10000) {
+		for (int i = 0; i < p.size(); i++) {
+			if (p[i].getID() == input) {
+				p[i].showProf();
+				return false;
+			}
+		}
+	}
+	else if (input >= 1000) {
+		for (int i = 0; i < a.size(); i++) {
+			if (a[i].getID() == input) {
+				a[i].showAW();
+				return false;
+			}
+		}
+	}
+	else if (input >= 100) {
+		for (int i = 0; i < c.size(); i++) {
+			if (c[i].getCID() == input) {
+				c[i].showCourse();
+				return false;
+			}
+		}
+	}
+	return true;
+}
+// CREATE
+void Administrative_Worker::createAccount(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	int input;
+	system("cls");
+	cout << "What type of account would you like to create?" << endl;
+	cout << "1. Student.\n2. Professor.\n3. Administrator.\n4. Create new course.\n5. Exit.\nInput: ";
+	cin >> input;
+
+	if (input == 1) {
+		createStudent(s);
+	}
+	if (input == 2) {
+		createProfessor(p);
+	}
+	if (input == 3) {
+		createAdmWor(a);
+	}
+	if (input == 4) {
+		createCourse(c);
+	}
+	if (input == 5) {
+		logged(s, p, a, c, e);
 	}
 }
-void Administrative_Worker::setAWID(long int x){
-    AWID = x;
+void Administrative_Worker::createStudent(vector<Student>& s) {
+	
+	long int ti;
+	string ts;
+	try {
+		Person person;
+		person.create();
+
+		Student stud;
+		stud.setPesel(person.getPesel());
+		stud.setFName(person.getFName());
+		stud.setLName(person.getLName());
+		stud.setGender(person.getGender());
+		stud.setDateOfBirth(person.getDateOfBirth());
+
+		cout << "\nStudentID: ";
+		cin >> ti;
+	
+		if (ti > 999999 || ti < 100000)
+			throw "Wrong number, student ID has 6 digits!";
+		for (int i = 0; i < s.size(); i++)
+			if (s[i].getID() == ti)
+				throw "Student with this ID already exists!";
+		stud.setID(ti);
+		s.push_back(stud);
+	}
+	catch (const char* s) { cout << "Error! " << s << endl; }
 }
-void Administrative_Worker::setawEmail(string x){
-    awEmail = x;
+void Administrative_Worker::createProfessor(vector<Professor>& p) {
+	long int ti;
+	string ts;
+	try{
+		Person person;
+		person.create();
+
+		Professor prof;
+		prof.setPesel(person.getPesel());
+		prof.setFName(person.getFName());
+		prof.setLName(person.getLName());
+		prof.setGender(person.getGender());
+		prof.setDateOfBirth(person.getDateOfBirth());
+
+		cout << "\nProfessorID: ";
+		cin >> ti;
+
+		if (ti > 99999 || ti < 10000)
+			throw "Wrong number, professor ID has 5 digits!";
+		for (int i = 0; i < p.size(); i++)
+			if (p[i].getID() == ti)
+				throw "Professor with this ID already exists!";
+
+		prof.setID(ti);
+
+		cout << "\nTitle: ";
+		cin >> ts;
+		prof.setTitle(ts);
+
+		p.push_back(prof);
+	}
+	catch (const char* s) { cout << "Error! " << s << endl; }
 }
-void Administrative_Worker::setJobTitle(string x){
-    jobTitle = x;
+void Administrative_Worker::createAdmWor(vector<Administrative_Worker>& a) {
+	long int ti;
+	string ts;
+	try {
+		Person person;
+		person.create();
+
+		Administrative_Worker admw;
+		admw.setPesel(person.getPesel());
+		admw.setFName(person.getFName());
+		admw.setLName(person.getLName());
+		admw.setGender(person.getGender());
+		admw.setDateOfBirth(person.getDateOfBirth());
+		
+		cout << "\nAdministrative Workers' ID: ";
+		cin >> ti;
+
+		if (ti > 9999 || ti < 1000)
+			throw "Wrong number, Administrative Worker's ID has 4 digits!";
+		for (int i = 0; i < a.size(); i++)
+			if (a[i].getID() == ti)
+				throw "Administrative Worker with this ID already exists!";
+
+		admw.setID(ti);
+
+		cout << "\nTitle: ";
+		cin >> ts;
+		admw.setTitle(ts);
+
+		a.push_back(admw);
+	}
+	catch (const char* s) { cout << "Error! " << s << endl; }
 }
-long int Administrative_Worker::getAWID(){
-    return AWID;
+void Administrative_Worker::createCourse(vector<Course>& c) {
+	int ti;
+	string ts;
+	Course course;
+	try {
+		cout << "Adding new course!\nCourse ID: ";
+		cin >> ti;
+		course.setCID(ti);
+
+		for (int i = 0; i < c.size(); i++)
+			if (c[i].getCID() == ti)
+				throw "Course with such ID already exists.";
+
+		cout << "\nName: ";
+		cin >> ts;
+		course.setName(ts);
+
+		cout << "\nExam date: ";
+		cin >> ts;
+		course.setExamDate(ts);
+		c.push_back(course);
+	}
+	catch (const char * s) { cout << s << endl; }
 }
-string Administrative_Worker::getawEmail(){
-    return awEmail;
+// UPDATE
+void Administrative_Worker::update() {
+	int input;
+	cout << "\n1. Change first name.\n2. Change last name.\n3. Change gender.\n4. Change birth date.\n5. Change title.\nInput: ";
+	cin >> input;
+
+	if (input >= 1 && input <= 4) {
+		updatePerson(input);
+	}
+	if (input == 5) {
+		string ts;
+		cout << "\nNew title for Administrative Worker with ID " << getID() << " is: ";
+		cin >> ts;
+		setTitle(ts);
+	}
+
 }
-string Administrative_Worker::getJobTitle(){
-    return jobTitle;
+void Administrative_Worker::updateAccount(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	int input;
+	cout << "1. Update student.\n2. Update professor.\n3. Update administrative worker.\n4. Update course.\nInput: ";
+	cin >> input;
+
+	if (input == 1) {
+		updateStudent(s);
+	}
+	if (input == 2) {
+		updateProfessor(p);
+	}
+	if (input == 3) {
+		updateAdmWor(a);
+	}
+	if (input == 4) {
+		updateCourse(c, p);
+	}
 }
+void Administrative_Worker::updateStudent(vector<Student>& vec) {
+	int x;
+	cout << "ID of a student you want to update: ";
+	cin >> x;
+	for (int i = 0; i < vec.size(); i++)
+		if (vec[i].getID() == x)
+			vec[i].update();
+}
+void Administrative_Worker::updateProfessor(vector<Professor>& vec) {
+	int x;
+	cout << "ID of a student you want to update: ";
+	cin >> x;
+	for (int i = 0; i < vec.size(); i++)
+		if (vec[i].getID() == x)
+			vec[i].update();
+}
+void Administrative_Worker::updateAdmWor(vector<Administrative_Worker>& vec) {
+	int x;
+	cout << "ID of a student you want to update: ";
+	cin >> x;
+	for (int i = 0; i < vec.size(); i++)
+		if (vec[i].getID() == x)
+			vec[i].update();
+}
+void Administrative_Worker::updateCourse(vector<Course>& vec, vector<Professor>& p) {
+	int x;
+	cout << "ID of a student you want to update: ";
+	cin >> x;
+	for (int i = 0; i < vec.size(); i++)
+		if (vec[i].getCID() == x)
+			vec[i].update(p);
+}
+// DELETE
+void Administrative_Worker::deleteAccount(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	int input;
+	cout << "1. Delete student.\n2. Delete professor.\n3. Delete administrative worker.\n4. Delete course.\nInput: ";
+	cin >> input;
+
+	if (input == 1) {
+		deleteStudent(s);
+	}
+	if (input == 2) {
+		deleteProfessor(p);
+	}
+	if (input == 3) {
+		deleteAdmWor(a);
+	}
+	if (input == 4) {
+		deleteCourse(c);
+	}
+}
+void Administrative_Worker::deleteStudent(vector<Student>& vec) {
+	int x;
+	cout << "ID of a student you want to delete: ";
+	cin >> x;
+	for (int i = 0; i<vec.size(); i++)
+		if (vec[i].getID() == x)
+			vec.erase(vec.begin() + i);
+}
+void Administrative_Worker::deleteProfessor(vector<Professor>& vec) {
+	int x;
+	cout << "ID of a professor you want to delete: ";
+	cin >> x;
+	for (int i = 0; i<vec.size(); i++)
+		if (vec[i].getID() == x)
+			vec.erase(vec.begin() + i);
+}
+void Administrative_Worker::deleteAdmWor(vector<Administrative_Worker>& vec) {
+	int x;
+	cout << "ID of a administrative worker you want to delete: ";
+	cin >> x;
+	for (int i = 0; i<vec.size(); i++)
+		if (vec[i].getID() == x)
+			vec.erase(vec.begin() + i);
+}
+void Administrative_Worker::deleteCourse(vector<Course>& vec) {
+	int x;
+	cout << "ID of a course you want to delete: ";
+	cin >> x;
+	for (int i = 0; i<vec.size(); i++)
+		if (vec[i].getCID() == x)
+			vec.erase(vec.begin() + i);
+}
+// LOGIN
 void Administrative_Worker::logged(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
 	int input;
-
+	system("pause");
 	system("cls");
-	cout << "Logged as administrative workers with ID: " << getAWID() << endl;
-	cout << "1. Show my info.\n2. Show my courses\n3. Enroll to a course.\n4. Disenroll from a course.\n5. Show my professors.\n6. Logout\n7. Exit." << endl;
+	cout << "Logged as administrative workers with ID: " << getID() << endl;
+	cout << "1. Show my info.\n2. Create new account or a course.\n3. Show account or a course.\n4. Update account or a course.\n5. Delete account or a course.\n6. Logout\n7. Exit.\nInput: ";
 	cin >> input;
 	if (input == 1) {
 		showAW();
 	}
 	if (input == 2) {
-		//showMyCourses(c, e);
+		createAccount(s, p, a, c, e);
 	}
 	if (input == 3) {
-		//courseEnroll(c, e);
+		showAccount(s, p, a, c, e);
 	}
 	if (input == 4) {
-		//courseDisenroll(c, e);
+		updateAccount(s, p, a, c, e);
 	}
 	if (input == 5) {
-		//showMyProfessors(p, c, e);
+		deleteAccount(s, p, a, c, e);
 	}
 	if (input == 6) {
 		menu m;
@@ -856,14 +1239,39 @@ void Administrative_Worker::logged(vector<Student>& s, vector<Professor>& p, vec
 }
 // ---------------------------- COURSE METHODS ----------------------------------
 Course::Course(){ // constructor
-    semester = 0;
     CourseID = 0;
     name = "No_name";
     examDate = "00.00.0000";
     pID = 9999;
 }
 Course::~Course(){} 
-
+// SETTERS
+void Course::setCID(int x) {
+	CourseID = x;
+}
+void Course::setPID(int x) {
+	pID = x;
+}
+void Course::setName(string x) {
+	name = x;
+}
+void Course::setExamDate(string x) {
+	examDate = x;
+}
+// GETTERS
+int Course::getCID() {
+	return CourseID;
+}
+int Course::getPID() {
+	return pID;
+}
+string Course::getName() {
+	return name;
+}
+string Course::getExamDate() {
+	return examDate;
+}
+// DATABASE
 void Course::load(vector<Course>& c){
     fstream couDB;
 	couDB.open("database/Courses.txt",ios::in);
@@ -875,14 +1283,12 @@ void Course::load(vector<Course>& c){
 
 
 	string line;
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 4; i++)
 		couDB >> line;
 	Course co;
 	while (!couDB.eof()) {
 		couDB >> line;
 		co.CourseID = atoll(line.c_str());
-		couDB >> line;
-		co.semester = atoll(line.c_str());
 		couDB >> co.name;
 		couDB >> line;
 		co.pID = atoll(line.c_str());
@@ -923,9 +1329,8 @@ void Course::generate(vector<Course>& vec, int howMany, vector<Professor>& p) {
 		temp.clear();
 
 		cour.setCID(sid++);
-		cour.setSemester(rand()%10+1);
 		if (p.size() > 0) 
-			cour.setPID(p[rand() % p.size()].getProfessorID());
+			cour.setPID(p[rand() % p.size()].getID());
 
 		vec.push_back(cour);
 
@@ -936,9 +1341,9 @@ void Course::save(vector<Course>& vec) {
 	file.open("database/Courses.txt");
 
 	int size = vec.size();
-	file << "CourseID\tSemester\tName\t\t\t\t\tpID\tExam_date\n" << endl;
+	file << "CourseID\tName\t\t\t\t\tpID\tExam_date\n" << endl;
 	for (int i = 0; i < size; i++) {
-		file << vec[i].CourseID << "\t\t" << vec[i].semester << "\t\t" << vec[i].name << "\t";
+		file << vec[i].CourseID << "\t\t" << vec[i].name << "\t";
 		if (vec[i].name.length() < 32) file << "\t";
 		if (vec[i].name.length() < 24) file << "\t";
 		if (vec[i].name.length() < 16) file << "\t";
@@ -947,8 +1352,9 @@ void Course::save(vector<Course>& vec) {
 	}
 	file.close();
 }
+// SHOW
 void Course::showCourse(){
-    cout << CourseID << "\t\t" << semester << "\t\t" << name << "\t";
+    cout << CourseID << "\t\t" << name << "\t";
     if(name.length() < 32) cout << "\t";
     if(name.length() < 24) cout << "\t";
     if(name.length() < 16) cout << "\t";
@@ -959,7 +1365,7 @@ void Course::showCourse(vector<Course>& vec) {
 	int size = vec.size();
 	cout << "CourseID\tSemester\tName\t\t\t\t\tpID\tExam date" << endl;
 	for (int i = 0; i < size; i++) {
-		cout << vec[i].CourseID << "\t\t" << vec[i].semester << "\t\t" << vec[i].name << "\t";
+		cout << vec[i].CourseID << "\t\t" << vec[i].name << "\t";
 		if (vec[i].name.length() < 32) cout << "\t";
 		if (vec[i].name.length() < 24) cout << "\t";
 		if (vec[i].name.length() < 16) cout << "\t";
@@ -967,48 +1373,72 @@ void Course::showCourse(vector<Course>& vec) {
 		cout << vec[i].pID << "\t" << vec[i].examDate << endl;
 	}
 }
-void Course::setCID(int x){
-    CourseID = x;
-}
-void Course::setPID(int x){
-    pID = x;
-}
-void Course::setSemester(int x){
-    semester = x;
-}
-void Course::setName(string x){
-    name = x;
-}
-void Course::setExamDate(string x){
-    examDate = x;
-}
-int Course::getCID(){
-    return CourseID;
-}
-int Course::getPID(){
-    return pID;
-}
-int Course::getSemester(){
-    return semester;
-}
-string Course::getName(){
-    return name;
-}
-string Course::getExamDate(){
-    return examDate;
-}
+// ASSIGN PROFESSOR
 void Course::assignProf(vector<Course>& c, vector<Professor>& p) {
 	for (int i = 0; i < c.size(); i++)
-		c[i].setPID(p[i%p.size()].getProfessorID());
+		c[i].setPID(p[i%p.size()].getID());
 }
+void Course::assignProf(vector<Professor>& p, int x) {
+	for (int i = 0; i < p.size(); i++) {
+		if (p[i].getID() == x) {
+			setPID(x);
+			return;
+		}
+	}
+	cout << "\n\nError! Professor with that ID doesn't exist!\n\n";
+}
+// LOGIN
+void Course::update(vector<Professor>& p) {
+	int input;
+	string ts;
+	cout << "\n1. Change name.\n2. Change course professor.\n3. Change exam date.\nInput: ";
+	cin >> input;
+
+	if (input == 1) {
+		cout << "\nNew name for course with ID " << getCID() << " is: ";
+		cin >> ts;
+		setName(ts);
+	}
+	if (input == 2) {
+		cout << "\nNew professor for course with ID " << getCID() << " has ID: ";
+		cin >> input;
+		assignProf(p, input);
+	}
+	if (input == 3) {
+		cout << "\nNew exam date for course with ID " << getCID() << " is: ";
+		cin >> ts;
+		setExamDate(ts);
+	}
+}
+
 // ---------------------------- ENROLLED METHODS ---------------------------------
 Enrolled::Enrolled(){
     CourseID = 0;
-    StudentID = 0;
+    ID = 0;
     grade = 0;
 }
 Enrolled::~Enrolled(){}
-
+// SETTERS
+void Enrolled::setCourseID(int x) {
+	CourseID = x;
+}
+void Enrolled::setStudID(long int x) {
+	ID = x;
+}
+void Enrolled::setGrade(float x) {
+	grade = x;
+}
+// GETTERS
+int Enrolled::getCID() {
+	return CourseID;
+}
+long int Enrolled::getStudID() {
+	return ID;
+}
+float Enrolled::getGrade() {
+	return grade;
+}
+// DATABASE
 void Enrolled::load(vector<Enrolled>& vec) {
 	fstream file;
 	file.open("database/Enrolled.txt", ios::in);
@@ -1026,7 +1456,7 @@ void Enrolled::load(vector<Enrolled>& vec) {
 		file >> line;
 		enrl.CourseID = atoll(line.c_str());
 		file >> line;
-		enrl.StudentID = atoll(line.c_str());
+		enrl.ID = atoll(line.c_str());
 		file >> line;
 		enrl.grade = atoll(line.c_str());
 
@@ -1048,7 +1478,7 @@ void Enrolled::generate(vector<Student>& s, vector<Course>& c, vector<Enrolled>&
 		x3 = rand() % s.size();
 		for (int j = 0; j < x1; j++) {
 			x3 += (rand() % 5 + 1);
-			SID = s[x3 % s.size()].getStudentID();
+			SID = s[x3 % s.size()].getID();
 			grade = (rand() % 5 + 6) / 2;
 			enrl.setCourseID(CID);
 			enrl.setStudID(SID);
@@ -1064,36 +1494,20 @@ void Enrolled::save(vector<Enrolled>& vec) {
 	int size = vec.size();
 	file << "CourseID\tStudentID\t\Grade\n" << endl;
 	for (int i = 0; i < size; i++) {
-		file << vec[i].CourseID << "\t\t" << vec[i].StudentID << "\t\t" << vec[i].grade << endl;
+		file << vec[i].CourseID << "\t\t" << vec[i].ID << "\t\t" << vec[i].grade << endl;
 	}
 
 	file.close();
 }
+// SHOW
 void Enrolled::showEnrolled(vector<Enrolled>& vec){
 	int size = vec.size();
 	cout << "CourseID\tStudentID\t\Grade\n" << endl;
 	for (int i = 0; i < size; i++) {
-		cout << vec[i].CourseID << "\t\t" << vec[i].StudentID << "\t\t" << vec[i].grade << endl;
+		cout << vec[i].CourseID << "\t\t" << vec[i].ID << "\t\t" << vec[i].grade << endl;
 	}
 }
-void Enrolled::setCourseID(int x){
-    CourseID = x;
-}
-void Enrolled::setStudID(long int x){
-    StudentID = x;
-}
-void Enrolled::setGrade(float x){
-    grade = x;
-}
-int Enrolled::getCID(){
-    return CourseID;
-}
-long int Enrolled::getStudID(){
-    return StudentID;
-}
-float Enrolled::getGrade(){
-    return grade;
-}
+
 // ---------------------------- MENU METHODS ---------------------------------
 menu::menu(){}
 menu::~menu(){}
@@ -1112,37 +1526,12 @@ void menu::loadDatabase(vector<Student>& s, vector<Professor>& p, vector<Adminis
 	course.load(c);
 	enrl.load(e);
 
-	cout << "\nLoaded " << s.size() << " students.\n";
+	cout << "Loaded " << s.size() << " students.\n";
 	cout << "Loaded " << p.size() << " professors.\n";
 	cout << "Loaded " << a.size() << " administrative workers.\n";
 	cout << "Loaded " << c.size() << " courses.\n";
-	cout << "Loaded " << e.size() << " enrolled pairs.\n";
+	cout << "Loaded " << e.size() << " enrolled pairs.\n" << endl;
 	system("pause");
-}
-void menu::gen(vector<Professor>& vec) {
-	ofstream file;
-	file.open("database/generatorDB/Job_titles_professors.txt");
-	vector<string> vec2;
-	bool test = true;
-	int size = vec.size();
-	for (int i = 0; i < size; i++) {
-		test = true;
-		for (int j = 0; j < vec2.size(); j++)
-			if (vec2[j] == vec[i].getTitle()) test = false;
-		if (test) {
-			vec2.push_back(vec[i].getTitle());
-			//cout << vec[i].getJobTitle() << endl;
-
-		}
-	}
-
-	int size2 = vec2.size();
-	sort(vec2.begin(), vec2.end());
-	for (int i = 0; i < size2; i++) {
-		file << vec2[i] << endl;
-	}
-	
-	file.close();
 }
 void menu::generateAll(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e, unsigned int howMany) {
 	Student stud;
@@ -1157,6 +1546,14 @@ void menu::generateAll(vector<Student>& s, vector<Professor>& p, vector<Administ
 	adw.generate(a, howMany/100);
 	course.generate(c, 700, p);
 	enrl.generate(s, c, e);
+}
+void menu::saveAll(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	s[0].save(s);
+	p[0].save(p);
+	a[0].save(a);
+	c[0].save(c);
+	e[0].save(e);
+
 }
 void menu::login(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
 	system("cls");
@@ -1179,7 +1576,7 @@ void menu::login(vector<Student>& s, vector<Professor>& p, vector<Administrative
 	test = false;
 	if (input >= 100000 && input < 1000000) {
 		for (i = 0; i < s.size(); i++) {
-			if (s[i].getStudentID() == input) {
+			if (s[i].getID() == input) {
 				test = true;
 				break;
 			}
@@ -1191,21 +1588,8 @@ void menu::login(vector<Student>& s, vector<Professor>& p, vector<Administrative
 		else login(s, p, a, c, e);
 	}
 	else if (input > 10000) {
-		for (i = 0; i < a.size(); i++) {
-			if (a[i].getAWID() == input) {
-				test = true;
-				break;
-			}
-		}
-		if (test) {
-			Administrative_Worker aw = a[i];
-			aw.logged(s, p, a, c, e);
-		}
-		else login(s, p, a, c, e);	
-	}
-	else if (input > 1000) {
 		for (i = 0; i < p.size(); i++) {
-			if (p[i].getProfessorID() == input) {
+			if (p[i].getID() == input) {
 				test = true;
 				break;
 			}
@@ -1216,87 +1600,26 @@ void menu::login(vector<Student>& s, vector<Professor>& p, vector<Administrative
 		}
 		else login(s, p, a, c, e);
 	}
+	else if (input > 1000) {
+		for (i = 0; i < a.size(); i++) {
+			if (a[i].getID() == input) {
+				test = true;
+				break;
+			}
+		}
+		if (test) {
+			Administrative_Worker aw = a[i];
+			aw.logged(s, p, a, c, e);
+		}
+		else login(s, p, a, c, e);
+	}
 	else login(s,p,a,c,e);
 }
 
 /* * /
 
 void menu::addStud(){
-string ts;
-long long int ti;
-cout << "\n\nAdding new student.\n\nPESEL: ";
-cin >> ti;
 
-try {
-if (ti < 10000000000){
-throw "Wrong pesel format!";
-}
-stud.setPesel(ti);
-} catch (const char* msg) {
-cerr << msg << endl;
-return;
-}
-
-cout << "\nFirst name: ";
-cin >> ts;
-try {
-if (ts.length() > 23){
-throw "First name is too long!";
-}
-stud.setFName(ts);
-} catch (const char* msg) {
-cerr << msg << endl;
-return;
-}
-
-cout << "\nLast name: ";
-cin >> ts;
-try {
-if (ts.length() > 23){
-throw "Last name is too long!";
-}
-stud.setLName(ts);
-} catch (const char* msg) {
-cerr << msg << endl;
-return;
-}
-
-cout << "\nGender (M/F): ";
-cin >> ts;
-try {
-if (ts != "M" && ts != "F"){
-throw "Gender should be equal to M or F!";
-}
-if (ts == "M") ts = "Male";
-if (ts == "F") ts = "Female";
-stud.setGender(ts);
-} catch (const char* msg) {
-cerr << msg << endl;
-return;
-}
-
-cout << "\nDate of birth: ";
-cin >> ts;
-try {
-if (ts.length() > 10 || ts.length() < 8){
-throw "Wrong format, too short or too long!";
-}
-stud.setDateOfBirth(ts);
-} catch (const char* msg) {
-cerr << msg << endl;
-return;
-}
-
-cout << "\nStudentID: ";
-cin >> ti;
-try {
-if (ti > 999999 || ti < 100000){
-throw "Wrong number, student ID has 6 digits!";
-}
-stud.setStudentID(ti);
-} catch (const char* msg) {
-cerr << msg << endl;
-return;
 }
 
 ostringstream stream;
@@ -1545,13 +1868,7 @@ return;
 c.push_back(course);
 }
 void menu::deleteStud(){
-int x;
-cout << "Give me ID of a student you want to delete: ";
-cin >> x;
 
-for(int i=0; i<s.size();i++)
-if(s[i].getStudentID() == x)
-s.erase(s.begin() + i);
 }
 void menu::select(){
 //char* word[];
