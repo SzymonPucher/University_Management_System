@@ -20,6 +20,7 @@ int main()
 	m.loadDatabase(s, p, a, c, e);
 	m.login(s,p,a,c,e);
 	//s[0].showStud(s);
+	/* */
 
 	system("pause");
     return 0;

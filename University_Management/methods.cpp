@@ -50,14 +50,29 @@ int Person::getID() {
 }
 // CREATE
 bool Person::create(){
+	/* 
+	Fuction takes data from user Input about Pesel, Name and Gender of a person for which new account is about to be created.
+	Used in created methods of derived classes.
+	*/
 	string ts;
 	long long int ti;
 	try {
 		cout << "\n\nAdding new account.\n\nPESEL: ";
-		cin >> ti;
+		cin >> ts;
+		if (!all_of(ts.begin(), ts.end(), ::isdigit))
+			throw "Given input is not a number!";
+		ti = stoll(ts);
 		if (ti < 10000000000 || ti > 100000000000)
 			throw "Wrong pesel format!";
 		setPesel(ti);
+
+		ts.erase(ts.begin() + 6, ts.end());
+		ts.append(".");
+		ts.append(ts.begin() + 2, ts.begin() + 4);
+		ts.append(".19");
+		ts.append(ts.begin(), ts.begin() + 2);
+		ts.erase(ts.begin(), ts.begin() + 4);
+		setDateOfBirth(ts);
 
 		cout << "\nFirst name: ";
 		cin >> ts;
@@ -78,19 +93,16 @@ bool Person::create(){
 		if (ts == "M") ts = "Male";
 		if (ts == "F") ts = "Female";
 		setGender(ts);
-
-		cout << "\nDate of birth: ";
-		cin >> ts;
-		if (ts.length() > 10 || ts.length() < 8)
-			throw "Wrong format, too short or too long!";
-		setDateOfBirth(ts);
 	}
 	catch (const char *s) { cout << s << endl; return false; }
 	return true;
 }
 // UPDATE
 bool Person::updatePerson(int input) {
-
+	/*
+	Funciton changes data about one of the users.
+	Used in update methods of classes of derived classes.
+	*/
 	string ts;
 	long long int ti;
 	try {
@@ -119,13 +131,6 @@ bool Person::updatePerson(int input) {
 			if (ts == "F") ts = "Female";
 			setGender(ts);
 		}
-		if (input == 4) {
-			cout << "\nDate of birth: ";
-			cin >> ts;
-			if (ts.length() > 10 || ts.length() < 8)
-				throw "Wrong format, too short or too long!";
-			setDateOfBirth(ts);
-		}
 	}
 	catch (const char *s) { cout << s << endl; return false; }
 	return true;
@@ -142,6 +147,10 @@ string Student::getEmail() {
 }
 // DATABASE
 void Student::load(vector<Student>& s){
+	/*
+	Funciton loads list of students from file in directory: database/Students.txt
+	Data is saved in vector of objects with name "s".
+	*/
 	fstream studDB;
 	studDB.open("database/Students.txt",ios::in);
 
@@ -170,6 +179,11 @@ void Student::load(vector<Student>& s){
 	studDB.close();
 }
 void Student::generate(vector<Student>& s, int howMany) {
+	/*
+	Function used for generating random list of students (amount of generated student is given by "howMany" variable).
+	Database of possible names of students is saved in directory database/generatorDB/*.txt
+	*/
+
 	if (howMany > 899000) howMany = 899000;
 	fstream fmn_file, ffn_file, ln_file;
 	fmn_file.open("database/generatorDB/First_names_male.txt", ios::in);
@@ -272,6 +286,9 @@ void Student::generate(vector<Student>& s, int howMany) {
 	if (count != 0) stud.generate(s, count);
 }
 void Student::save(vector<Student>& vec) {
+	/*
+	Function saves database of students stored in vector "s" to a file with directory: database/Students.txt
+	*/
 	ofstream file;
 	file.open("database/Students.txt");
 	
@@ -289,6 +306,9 @@ void Student::save(vector<Student>& vec) {
 }
 // SHOW
 void Student::showStud() {
+	/*
+	Function shows information about one student.
+	*/
 	//cout << "\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail" << endl;
 	cout << pesel << "\t" << fName << "\t";
 	if (fName.length() < 8) cout << "\t";
@@ -297,12 +317,18 @@ void Student::showStud() {
 	cout << gender << "\t" << dateOfBirth << "\t" << ID << "\t\t" << getEmail() << endl;
 }
 void Student::showStud(vector<Student>& vec){
+	/*
+	Function shows whole list of students saved in vector "s".
+	*/
 	int size = vec.size();
 	cout << "\n\nPESEL\t\tFirst name\tLast name\tGender\tDate of birth\tStudentID\tEmail" << endl;
 	for (int i = 0; i < size; i++)
 		vec[i].showStud();
 }
 void Student::showMyCourses(vector<Course>& c, vector<Enrolled>& e) {
+	/*
+	Method shows all courses a student is enrolled to.
+	*/
 	cout << "\nCourseID\tSemester\tName\t\t\t\t\tpID\tExam date" << endl;
 	for (int i = 0; i<c.size(); i++)
 		for (int j = 0; j<e.size(); j++)
@@ -310,6 +336,9 @@ void Student::showMyCourses(vector<Course>& c, vector<Enrolled>& e) {
 				c[i].showCourse();
 }
 void Student::showMyProfessors(vector<Professor>& p, vector<Course>& c, vector<Enrolled>& e) {
+	/*
+	Method shows all professors that students has classes with.
+	*/
 	cout << "PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail" << endl;
 	Professor prof;
 	for (int i = 0; i<c.size(); i++)
@@ -319,17 +348,22 @@ void Student::showMyProfessors(vector<Professor>& p, vector<Course>& c, vector<E
 }
 // UPDATE
 void Student::update() {
-
+	// Changes informatuon about student
 	int input;
-	cout << "\n1. Change first name.\n2. Change last name.\n3. Change gender.\n4. Change birth date.\nInput: ";
+	cout << "\n1. Change first name.\n2. Change last name.\n3. Change gender.\nInput: ";
 	cin >> input;
 
-	if (input >= 1 && input <= 4) {
+	if (input >= 1 && input <= 3) {
 		updatePerson(input);
 	}
+	else cout << "Error!";
 }
 // COURSE METHODS
 void Student::courseEnroll(vector<Course>& c, vector<Enrolled>& e) {
+	/*
+	Method enrolls student for a particural course.
+	Adds this enrollment to Enrolled Database, where all enrollment pairs (student + course) are stored.
+	*/
 	int input;
 	cin >> input;
 	try {
@@ -353,6 +387,10 @@ void Student::courseEnroll(vector<Course>& c, vector<Enrolled>& e) {
 	cout << "You successfully enrolled to a course with ID = " << input << endl;
 }
 void Student::courseDisenroll(vector<Course>& c, vector<Enrolled>& e) {
+	/*
+	Method cancels enrollment for a course done by student.
+	It deletes erollment pair from Enrollment Database.
+	*/
 	int input;
 	cin >> input;
 
@@ -366,6 +404,10 @@ void Student::courseDisenroll(vector<Course>& c, vector<Enrolled>& e) {
 }
 // LOGIN
 void Student::logged(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	/*
+	Method displayed when student successfully logs in.
+	It's a menu for user-program interaction.
+	*/
 	int input;
 	
 	system("cls");
@@ -418,6 +460,10 @@ string Professor::getTitle() {
 }
 // DATABASE
 void Professor::load(vector<Professor>& p){
+	/*
+	Funciton loads list of professors from file in directory: database/Professors.txt
+	Data is saved in vector of objects with name "p".
+	*/
     fstream profDB;
 	profDB.open("database/Professors.txt",ios::in);
 
@@ -448,6 +494,10 @@ void Professor::load(vector<Professor>& p){
 	profDB.close();
 }
 void Professor::generate(vector<Professor>& vec, int howMany) {
+	/*
+	Function used for generating random list of professors (amount of generated professors is given by "howMany" variable).
+	Database of possible names of professors is saved in directory database/generatorDB/*.txt
+	*/
 	if (howMany > 8990) howMany = 8990;
 	fstream fmn_file, ffn_file, ln_file, t_file;
 	fmn_file.open("database/generatorDB/First_names_male.txt", ios::in);
@@ -564,6 +614,9 @@ void Professor::generate(vector<Professor>& vec, int howMany) {
 	if (count != 0) prof.generate(vec, count);
 }
 void Professor::save(vector<Professor>& vec) {
+	/*
+	Function saves database of professors stored in vector "p" to a file with directory: database/Professors.txt
+	*/
 	ofstream file;
 	file.open("database/Professors.txt");
 
@@ -583,7 +636,9 @@ void Professor::save(vector<Professor>& vec) {
 }
 // SHOW
 void Professor::showProf() {
-
+	/*
+	Function shows information about one professor.
+	*/
 	//cout << "PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail" << endl;
 	cout << pesel << "\t" << title << "\t";
 	if (title.length() < 16) cout << "\t";
@@ -596,6 +651,9 @@ void Professor::showProf() {
 
 }
 void Professor::showProf(vector<Professor>& vec, int PID) {
+	/*
+	Function shows a professor with ID given by argument passed to the function "PID".
+	*/
 	int size = vec.size();
 	//cout << "PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail" << endl;
 	for (int i = 0; i < size; i++)
@@ -603,18 +661,27 @@ void Professor::showProf(vector<Professor>& vec, int PID) {
 			vec[i].showProf();
 }
 void Professor::showProf(vector<Professor>& vec) {
+	/*
+	Function shows whole list of professors saved in vector "p".
+	*/
 	int size = vec.size();
 	cout << "PESEL\t\tTitle\t\t\tFirst name\tLast name\tGender\tDate of birth\tProfessorID\tEmail" << endl;
 	for (int i = 0; i < size; i++) 
 		vec[i].showProf();
 }
 void Professor::showMyCourses(vector<Course>& c) {
+	/*
+	Shows all the courses this professor leads.
+	*/
 	cout << "\nCourseID\tName\t\t\t\t\tpID\tExam date" << endl;
 	for (int i = 0; i<c.size(); i++)
 		if (c[i].getPID() == getID())
 			c[i].showCourse();
 }
 void Professor::showMyStudents(vector<Student>& s, vector<Course>& c, vector<Enrolled>& e) {
+	/*
+	Shows list of all students who participate in this professor's courses. For every course there is seperate list provided.
+	*/
 	for (int i = 0; i < c.size(); i++) {
 		if (c[i].getPID() == getID()) { // finds courses professor has
 			cout << "----------------------------------------------------------\n\nCourseID\tName\t\t\t\t\tpID\tExam date" << endl;
@@ -629,8 +696,11 @@ void Professor::showMyStudents(vector<Student>& s, vector<Course>& c, vector<Enr
 }
 // UPDATE
 void Professor::update() {
+	/*
+	Method changes informaton about course.
+	*/
 	int input;
-	cout << "\n1. Change first name.\n2. Change last name.\n3. Change gender.\n4. Change birth date.\n5. Change title.\nInput: ";
+	cout << "\n1. Change first name.\n2. Change last name.\n3. Change gender.\n4. Change title.\nInput: ";
 	cin >> input;
 
 	if (input >= 1 && input <= 4) {
@@ -646,6 +716,10 @@ void Professor::update() {
 }
 // LOGIN
 void Professor::logged(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	/*
+	Mehtod is a type of a menu.
+	Displayed when professor logins successfully.
+	*/
 	int input;
 
 	system("cls");
@@ -693,6 +767,10 @@ string Administrative_Worker::getTitle() {
 }
 // DATABASE
 void Administrative_Worker::load(vector<Administrative_Worker>& a){
+	/*
+	Funciton loads list of administrative workers from file in directory: database/Administrative_Workers.txt
+	Data is saved in vector of objects with name "a".
+	*/
     fstream aw;
     aw.open("database/Administrative_Workers.txt",ios::in);
 
@@ -723,6 +801,10 @@ void Administrative_Worker::load(vector<Administrative_Worker>& a){
     aw.close();
 }
 void Administrative_Worker::generate(vector<Administrative_Worker>& vec, int howMany) {
+	/*
+	Function used for generating random list of administrative workers (amount of generated administrative workers is given by "howMany" variable).
+	Database of possible names of administrative workers is saved in directory database/generatorDB/*.txt
+	*/
 	if (howMany > 89900) howMany = 89900;
 	fstream fmn_file, ffn_file, ln_file, t_file;
 	fmn_file.open("database/generatorDB/First_names_male.txt", ios::in);
@@ -839,6 +921,9 @@ void Administrative_Worker::generate(vector<Administrative_Worker>& vec, int how
 	if (count != 0) aw.generate(vec, count);
 }
 void Administrative_Worker::save(vector<Administrative_Worker>& vec) {
+	/*
+	Function saves database of administrative workers stored in vector "a" to a file with directory: database/Administrative_Workers.txt
+	*/
 	ofstream file;
 	file.open("database/Administrative_Workers.txt");
 
@@ -858,6 +943,9 @@ void Administrative_Worker::save(vector<Administrative_Worker>& vec) {
 }
 // SHOW
 void Administrative_Worker::showAW() {
+	/*
+	Function shows information about one administrative worker.
+	*/
 	//cout << "PESEL\t\tJob Title\t\tFirst name\tLast name\tGender\tDate of birth\tAdm. Worker ID\tEmail" << endl;
 	cout << pesel << "\t" << title << "\t";
 	if (title.length() < 16) cout << "\t";
@@ -870,12 +958,18 @@ void Administrative_Worker::showAW() {
 
 }
 void Administrative_Worker::showAW(vector<Administrative_Worker>& vec){
+	/*
+	Function shows whole list of administrative workers saved in vector "a".
+	*/
 	int size = vec.size();
 	cout << "PESEL\t\tJob Title\t\tFirst name\tLast name\tGender\tDate of birth\tAdm. Worker ID\tEmail" << endl;
 	for (int i = 0; i < size; i++)
 		vec[i].showAW();
 }
 void Administrative_Worker::showAccount(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	/*
+	Method for showing information about one or all of the accounts of one type in the system.
+	*/
 	int input;
 	cout << "1. Show all students.\n2. Show all professors.\n3. Show all administrative workers.\n4. Show all courses.\n5. Show all enrollments." << endl;
 	cout << "6. Show person or course by ID.\n7. Back.\nInput: ";
@@ -905,6 +999,10 @@ void Administrative_Worker::showAccount(vector<Student>& s, vector<Professor>& p
 	logged(s, p, a, c, e);
 }
 bool Administrative_Worker::showAccountByID(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	/*
+	Method displays after choosing to show information about particural account in method: "showAccount".
+	It puprose is to get an ID and search for a person or a course with such in the database.
+	*/
 	int input;
 	cout << "You are searching for particural record in database. Input ID: ";
 	cin >> input;
@@ -945,6 +1043,9 @@ bool Administrative_Worker::showAccountByID(vector<Student>& s, vector<Professor
 }
 // CREATE
 void Administrative_Worker::createAccount(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	/*
+	Menu-method for choosing the type of account to be created.
+	*/
 	int input;
 	system("cls");
 	cout << "What type of account would you like to create?" << endl;
@@ -968,7 +1069,9 @@ void Administrative_Worker::createAccount(vector<Student>& s, vector<Professor>&
 	}
 }
 void Administrative_Worker::createStudent(vector<Student>& s) {
-	
+	/*
+	Method creates new student and puts him in vector of all students in the system.
+	*/
 	long int ti;
 	string ts;
 	try {
@@ -996,6 +1099,9 @@ void Administrative_Worker::createStudent(vector<Student>& s) {
 	catch (const char* s) { cout << "Error! " << s << endl; }
 }
 void Administrative_Worker::createProfessor(vector<Professor>& p) {
+	/*
+	Method creates new professor and puts him in vector of all professors in the system.
+	*/
 	long int ti;
 	string ts;
 	try{
@@ -1029,6 +1135,9 @@ void Administrative_Worker::createProfessor(vector<Professor>& p) {
 	catch (const char* s) { cout << "Error! " << s << endl; }
 }
 void Administrative_Worker::createAdmWor(vector<Administrative_Worker>& a) {
+	/*
+	Method creates new administrative worker and puts him in vector of all administrative worker in the system.
+	*/
 	long int ti;
 	string ts;
 	try {
@@ -1062,6 +1171,9 @@ void Administrative_Worker::createAdmWor(vector<Administrative_Worker>& a) {
 	catch (const char* s) { cout << "Error! " << s << endl; }
 }
 void Administrative_Worker::createCourse(vector<Course>& c) {
+	/*
+	Method creates new course and puts him in vector of all course in the system.
+	*/
 	int ti;
 	string ts;
 	Course course;
@@ -1087,22 +1199,27 @@ void Administrative_Worker::createCourse(vector<Course>& c) {
 }
 // UPDATE
 void Administrative_Worker::update() {
+	/*
+	Method changes information about currently logged in administrative worker.
+	*/
 	int input;
-	cout << "\n1. Change first name.\n2. Change last name.\n3. Change gender.\n4. Change birth date.\n5. Change title.\nInput: ";
+	cout << "\n1. Change first name.\n2. Change last name.\n3. Change gender.\n4. Change title.\nInput: ";
 	cin >> input;
 
-	if (input >= 1 && input <= 4) {
+	if (input >= 1 && input <= 3) {
 		updatePerson(input);
 	}
-	if (input == 5) {
+	if (input == 4) {
 		string ts;
 		cout << "\nNew title for Administrative Worker with ID " << getID() << " is: ";
 		cin >> ts;
 		setTitle(ts);
 	}
-
 }
 void Administrative_Worker::updateAccount(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	/*
+	Menu-method for choosing the type of account to be updated.
+	*/
 	int input;
 	cout << "1. Update student.\n2. Update professor.\n3. Update administrative worker.\n4. Update course.\nInput: ";
 	cin >> input;
@@ -1121,6 +1238,9 @@ void Administrative_Worker::updateAccount(vector<Student>& s, vector<Professor>&
 	}
 }
 void Administrative_Worker::updateStudent(vector<Student>& vec) {
+	/*
+	Method gets ID and changes information about student with such.
+	*/
 	int x;
 	cout << "ID of a student you want to update: ";
 	cin >> x;
@@ -1129,6 +1249,9 @@ void Administrative_Worker::updateStudent(vector<Student>& vec) {
 			vec[i].update();
 }
 void Administrative_Worker::updateProfessor(vector<Professor>& vec) {
+	/*
+	Method gets ID and changes information about professor with such.
+	*/
 	int x;
 	cout << "ID of a student you want to update: ";
 	cin >> x;
@@ -1137,6 +1260,9 @@ void Administrative_Worker::updateProfessor(vector<Professor>& vec) {
 			vec[i].update();
 }
 void Administrative_Worker::updateAdmWor(vector<Administrative_Worker>& vec) {
+	/*
+	Method gets ID and changes information about administrative worker with such.
+	*/
 	int x;
 	cout << "ID of a student you want to update: ";
 	cin >> x;
@@ -1145,6 +1271,9 @@ void Administrative_Worker::updateAdmWor(vector<Administrative_Worker>& vec) {
 			vec[i].update();
 }
 void Administrative_Worker::updateCourse(vector<Course>& vec, vector<Professor>& p) {
+	/*
+	Method gets ID and changes information about course with such.
+	*/
 	int x;
 	cout << "ID of a student you want to update: ";
 	cin >> x;
@@ -1154,6 +1283,9 @@ void Administrative_Worker::updateCourse(vector<Course>& vec, vector<Professor>&
 }
 // DELETE
 void Administrative_Worker::deleteAccount(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	/*
+	Menu-method for choosing the type of account to be deleted.
+	*/
 	int input;
 	cout << "1. Delete student.\n2. Delete professor.\n3. Delete administrative worker.\n4. Delete course.\nInput: ";
 	cin >> input;
@@ -1172,6 +1304,9 @@ void Administrative_Worker::deleteAccount(vector<Student>& s, vector<Professor>&
 	}
 }
 void Administrative_Worker::deleteStudent(vector<Student>& vec) {
+	/*
+	Method gets ID and deletes student with such.
+	*/
 	int x;
 	cout << "ID of a student you want to delete: ";
 	cin >> x;
@@ -1180,6 +1315,9 @@ void Administrative_Worker::deleteStudent(vector<Student>& vec) {
 			vec.erase(vec.begin() + i);
 }
 void Administrative_Worker::deleteProfessor(vector<Professor>& vec) {
+	/*
+	Method gets ID and deletes professor with such.
+	*/
 	int x;
 	cout << "ID of a professor you want to delete: ";
 	cin >> x;
@@ -1188,6 +1326,9 @@ void Administrative_Worker::deleteProfessor(vector<Professor>& vec) {
 			vec.erase(vec.begin() + i);
 }
 void Administrative_Worker::deleteAdmWor(vector<Administrative_Worker>& vec) {
+	/*
+	Method gets ID and deletes administrative worker with such.
+	*/
 	int x;
 	cout << "ID of a administrative worker you want to delete: ";
 	cin >> x;
@@ -1196,6 +1337,9 @@ void Administrative_Worker::deleteAdmWor(vector<Administrative_Worker>& vec) {
 			vec.erase(vec.begin() + i);
 }
 void Administrative_Worker::deleteCourse(vector<Course>& vec) {
+	/*
+	Method gets ID and deletes course with such.
+	*/
 	int x;
 	cout << "ID of a course you want to delete: ";
 	cin >> x;
@@ -1205,6 +1349,10 @@ void Administrative_Worker::deleteCourse(vector<Course>& vec) {
 }
 // LOGIN
 void Administrative_Worker::logged(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
+	/*
+	Mehtod is a type of a menu.
+	Displayed when administrative worker logs in successfully.
+	*/
 	int input;
 	system("pause");
 	system("cls");
@@ -1512,6 +1660,15 @@ void Enrolled::showEnrolled(vector<Enrolled>& vec){
 menu::menu(){}
 menu::~menu(){}
 
+int menu::intInput() {
+	// Function checks if an input is a number. If yes then returns it.
+	string s;
+	cin >> s;
+	if (all_of(s.begin(), s.end(), ::isdigit))
+		return stoi(s);
+	else cout << "\n\nGiven input is not a number! Enter a number!\n\nInput: ";
+	intInput();
+}
 void menu::loadDatabase(vector<Student>& s, vector<Professor>& p, vector<Administrative_Worker>& a, vector<Course>& c, vector<Enrolled>& e) {
 
 	Student stud;
